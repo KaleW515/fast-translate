@@ -61,4 +61,16 @@
    make install
    ```
 
-### 使用yay安装
+### Arch Linux
+
+如果你是arch系用户，包含arch，manjaro等发行版，你可以选择使用yay进行安装
+
+#### 使用yay安装
+
+1. 项目已经打包到AUR，使用yay命令即可完成安装
+
+   `yay -S fast-translate`
+
+## 最后
+
+如果你在使用中觉得缺失什么功能或者发现什么bug，欢迎提issue～
