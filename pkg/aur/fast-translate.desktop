@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=快译
+Comment=翻译
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=Utility;
+Icon=fast-translate.png
+Exec=ftranslate

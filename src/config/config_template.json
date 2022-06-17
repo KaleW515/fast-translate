@@ -1,0 +1,10 @@
+{
+  "baiduSecret": {
+    "appid": "",
+    "appKey": ""
+  },
+  "googleSecret": {
+    "proxies": {
+    }
+  }
+}

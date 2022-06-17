@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /opt/fast-translate || exit 1
+python3 ./main.py
