@@ -14,6 +14,7 @@ def get_config_constant():
 
 
 def get_config_secret():
+    check_config()
     with open(path["home_path"] + "/.config/fast-translate/config.json", "r") as f:
         cfg = json.load(f)
     return cfg
