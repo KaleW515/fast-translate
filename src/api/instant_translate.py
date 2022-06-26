@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 class InstantTranslate:
     def __init__(self):
         self.k = keyboard.Controller()
-        self.sync = 3
+        self.sync = 1
         self.have_copy = False
         self.lock = threading.Lock()
         self.mt = mouse.Listener(on_move=self.on_move)
@@ -20,14 +20,14 @@ class InstantTranslate:
         self.press_copy_thread = threading.Thread(target=self.press_copy)
 
     def on_move(self, x, y):
-        self.sync = 2
+        self.sync = 1
         self.have_copy = False
         # print(x, y)
 
     def sync_desc(self):
         logging.info("sync desc thread start")
         while 1:
-            time.sleep(0.5)
+            time.sleep(0.6)
             self.lock.acquire()
             if self.sync >= 1:
                 self.sync -= 1
@@ -63,7 +63,7 @@ class InstantTranslate:
             pass
 
     def run(self):
-        self.sync = 3
+        self.sync = 1
         self.mt.start()
         self.sync_desc_thread.start()
         self.press_copy_thread.start()
