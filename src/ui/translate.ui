@@ -174,12 +174,18 @@
      <string>设置</string>
     </property>
     <addaction name="translateSetting"/>
+    <addaction name="aboutSetting"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <action name="translateSetting">
    <property name="text">
     <string>翻译设置</string>
+   </property>
+  </action>
+  <action name="aboutSetting">
+   <property name="text">
+    <string>关于</string>
    </property>
   </action>
  </widget>

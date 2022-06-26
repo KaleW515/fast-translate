@@ -90,7 +90,10 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
         self.translateSetting = QtWidgets.QAction(MainWindow)
         self.translateSetting.setObjectName("translateSetting")
+        self.aboutSetting = QtWidgets.QAction(MainWindow)
+        self.aboutSetting.setObjectName("aboutSetting")
         self.menu.addAction(self.translateSetting)
+        self.menu.addAction(self.aboutSetting)
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -108,3 +111,4 @@ class Ui_MainWindow(object):
         self.googleLable.setText(_translate("MainWindow", "谷歌翻译"))
         self.menu.setTitle(_translate("MainWindow", "设置"))
         self.translateSetting.setText(_translate("MainWindow", "翻译设置"))
+        self.aboutSetting.setText(_translate("MainWindow", "关于"))

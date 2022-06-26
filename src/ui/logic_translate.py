@@ -10,7 +10,7 @@ import ui.Ui_translate as Ui_translate
 from api import translator
 from api.instant_translate import InstantTranslate
 from utils import config_tools
-from ui import logic_preference
+from ui import logic_preference, logic_about
 
 cache = {
     "original": "",
@@ -61,9 +61,13 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.it_process = None
         # 菜单栏点击事件
         self.translateSetting.triggered.connect(self.on_translate_setting)
+        self.aboutSetting.triggered.connect(self.on_about_setting)
 
     def on_translate_setting(self):
         logic_preference.get_preference().show()
+
+    def on_about_setting(self):
+        logic_about.get_about().show()
 
     def baidu_res_set(self, res):
         if self.additionalBox.isChecked():
