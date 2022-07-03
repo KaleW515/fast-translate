@@ -63,6 +63,11 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.translateSetting.triggered.connect(self.on_translate_setting)
         self.aboutSetting.triggered.connect(self.on_about_setting)
 
+    # 窗口关闭事件
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+
     def on_translate_setting(self):
         logic_preference.get_preference().show()
 
