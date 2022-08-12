@@ -2,7 +2,7 @@ import json
 
 import requests
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 
 
 def check_update():

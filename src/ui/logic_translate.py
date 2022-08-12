@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 from multiprocessing import Process
 
 from PyQt5.QtCore import *
@@ -9,8 +10,8 @@ import app_clipboard
 import ui.Ui_translate as Ui_translate
 from api import translator
 from api.instant_translate import InstantTranslate
-from utils import config_tools
 from ui import logic_preference, logic_about
+from utils import config_tools
 
 cache = {
     "original": "",
@@ -55,7 +56,8 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.translate_thread.baidu_signal.connect(self.baidu_res_set)
         self.translate_thread.google_signal.connect(self.google_res_set)
 
-        self.targetBox.currentTextChanged.connect(clipboard_change)
+        # self.targetBox.currentTextChanged.connect(clipboard_change)
+        self.instantTranslateMode.currentTextChanged.connect(self.on_set_mode)
 
         self.it = None
         self.it_process = None
@@ -105,9 +107,11 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
             return
         else:
             logging.info("it_process is alive")
-            self.it.release_key()
-            self.it_process.terminate()
-            self.it_process.join()
+            if self.it is not None:
+                self.it.release_key()
+            if self.it_process is not None:
+                self.it_process.terminate()
+                self.it_process.join()
             logging.info("it_process is stopped")
 
     def on_baidubox_click(self):
@@ -123,22 +127,39 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 
     def on_translatenowbox_click(self):
         if self.translateNowBox.isChecked():
-            self.it = InstantTranslate()
-            self.it.release_key()
-            self.it_process = Process(target=self.it.run)
-            self.it_process.start()
-            logging.info("translate now box is checked")
+            if self.instantTranslateMode.currentText() == "MODE 0":
+                self.it = InstantTranslate()
+                self.it.release_key()
+                self.it_process = Process(target=self.it.run)
+                self.it_process.start()
+                logging.info("translate now box is checked")
+            else:
+                self.it.release_key()
+                self.it_process.terminate()
+                self.it_process.join()
+                self.it = None
+                self.it_process = None
+                logging.info("translate now process is stopped")
         else:
             # 停止it_process进程
-            self.it.release_key()
+            if self.it is not None:
+                self.it.release_key()
             logging.info("translate thread release key")
-            self.it_process.terminate()
-            self.it_process.join()
+            if self.it_process is not None:
+                self.it_process.terminate()
+                self.it_process.join()
+                self.it_process = None
+            self.it = None
             logging.info("translate now process is stopped")
+
+    def on_set_mode(self):
+        logging.info("now mode is {}".format(self.instantTranslateMode.currentText()))
+        self.on_translatenowbox_click()
 
     def fill_targetbox(self):
         targets = config_tools.get_config_constant()["targetList"]
         self.targetBox.addItems(targets)
+        self.instantTranslateMode.addItems({"MODE 0": 0, "MODE 1": 1})
 
     def get_curr_server(self):
         curr_server = set()
@@ -208,7 +229,10 @@ class TranslateThread(QObject):
 
 
 def clipboard_change():
-    data = clipboard.mimeData()
+    is_selection = clipboard.Clipboard
+    if MainWindow.instantTranslateMode.currentText() == "MODE 1" and MainWindow.translateNowBox.isChecked():
+        is_selection = clipboard.Selection
+    data = clipboard.mimeData(is_selection)
     target = MainWindow.get_curr_target()
     server = MainWindow.get_curr_server()
     if data.text() == cache["original"] and target == cache["target"] and server == cache["server"]:
@@ -224,11 +248,19 @@ def clipboard_change():
             now["original"] = original
             now["target"] = target
             now["server"] = server
-            MainWindow.start_translate_thread.emit()
+            global last_time
+            if time.time() - last_time < 1:
+                time.sleep(1)
+            if MainWindow.originalText.toPlainText() == original:
+                last_time = time.time()
+                MainWindow.start_translate_thread.emit()
+
 
 MainWindow = UiTranslate()
 _, clipboard = app_clipboard.get_app_clipboard()
 clipboard.dataChanged.connect(clipboard_change)
+clipboard.selectionChanged.connect(clipboard_change)
+last_time = time.time()
 
 
 def get_MainWindow():
