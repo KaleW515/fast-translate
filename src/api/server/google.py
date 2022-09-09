@@ -7,18 +7,18 @@ import httpx
 
 class TranslateResponse:
 
-    def __init__(self, translatedText: str, detectedSourceLanguage: str = None, model: str = None):
-        if isinstance(translatedText, list):
-            self.translatedText = translatedText[0]
-            self.detectedSourceLanguage = translatedText[1]
+    def __init__(self, translated_text: str, detected_source_language: str = None, model: str = None):
+        if isinstance(translated_text, list):
+            self.translated_text = translated_text[0]
+            self.detected_source_language = translated_text[1]
         else:
-            self.translatedText = translatedText
-            self.detectedSourceLanguage = detectedSourceLanguage
+            self.translated_text = translated_text
+            self.detected_source_language = detected_source_language
         self.model = model
 
     def __repr__(self):
-        return self.__class__.__qualname__ + f'(translatedText={repr(self.translatedText)}, detectedSourceLanguage=' \
-                                             f'{repr(self.detectedSourceLanguage)}, model={repr(self.model)})'
+        return self.__class__.__qualname__ + f'(translatedText={repr(self.translated_text)}, detectedSourceLanguage=' \
+                                             f'{repr(self.detected_source_language)}, model={repr(self.model)})'
 
 
 class GoogleTranslator:
@@ -36,7 +36,7 @@ class GoogleTranslator:
         self.fmt = fmt
 
         if user_agent is None:
-            user_agent = (
+            self.user_agent = (
                 f'GoogleTranslate/6.{random.randint(10, 100)}.0.06.{random.randint(111111111, 999999999)}'
                 ' (Linux; U; Android {random.randint(5, 11)}; {base64.b64encode(str(random.random())['
                 '2:].encode()).decode()}) '
@@ -69,8 +69,8 @@ class GoogleTranslator:
             return "网络异常, 请检查代理", False
         # noinspection PyUnboundLocalVariable
         if response.status_code == 200:
-            ll = [TranslateResponse(translatedText=i) for i in response.json()]
-            return ll[0].translatedText, True
+            ll = [TranslateResponse(translated_text=i) for i in response.json()]
+            return ll[0].translated_text, True
         return response.text, False
 
     async def __translate(
@@ -122,5 +122,3 @@ if __name__ == '__main__':
     future = asyncio.ensure_future(client.translate('hello', target='zh'))
     loop.run_until_complete(future)
     print(future.result())
-    # text = client.translate('hello', target='zh')
-    # print(text)
