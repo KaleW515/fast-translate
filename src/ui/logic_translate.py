@@ -36,15 +36,19 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
     def __init__(self, parent=None):
         super(UiTranslate, self).__init__(parent)
         self.setupUi(self)
-        self.baiduBox.setCheckState(Qt.Checked)
+        self.googleCNBox.setCheckState(Qt.Checked)
         self.translateButton.clicked.connect(self.on_translate_button_click)
         # 设置为未选中状态
+        self.baiduBox.setCheckState(Qt.Unchecked)
+        self.baiduText.setVisible(False)
+        self.baiduLabel.setVisible(False)
         self.googleBox.setCheckState(Qt.Unchecked)
         self.googleText.setVisible(False)
         self.googleLable.setVisible(False)
 
         self.baiduBox.clicked.connect(self.on_baidubox_click)
         self.googleBox.clicked.connect(self.on_googlebox_click)
+        self.googleCNBox.clicked.connect(self.on_googlecnbox_click)
         self.translateNowBox.clicked.connect(self.on_translatenowbox_click)
         self.fill_targetbox()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -55,6 +59,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.start_translate_thread.connect(self.translate_thread.run)
         self.translate_thread.baidu_signal.connect(self.baidu_res_set)
         self.translate_thread.google_signal.connect(self.google_res_set)
+        self.translate_thread.googlecn_signal.connect(self.googlecn_res_set)
 
         # self.targetBox.currentTextChanged.connect(clipboard_change)
         self.instantTranslateMode.currentTextChanged.connect(self.on_set_mode)
@@ -87,6 +92,12 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
             self.googleText.setPlainText(self.googleText.toPlainText() + res)
         else:
             self.googleText.setPlainText(res)
+
+    def googlecn_res_set(self, res):
+        if self.additionalBox.isChecked():
+            self.googleCNText.setPlainText(self.googleCNText.toPlainText() + res)
+        else:
+            self.googleCNText.setPlainText(res)
 
     def stop_thread(self):
         if not self.thread.isRunning():
@@ -121,6 +132,10 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
     def on_googlebox_click(self):
         self.googleLable.setVisible(self.googleBox.isChecked())
         self.googleText.setVisible(self.googleBox.isChecked())
+
+    def on_googlecnbox_click(self):
+        self.googleCNLable.setVisible(self.googleCNBox.isChecked())
+        self.googleCNText.setVisible(self.googleCNBox.isChecked())
 
     def on_translate_button_click(self):
         clipboard.setText(self.originalText.toPlainText())
@@ -167,6 +182,8 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
             curr_server.add("baidu")
         if self.googleBox.isChecked():
             curr_server.add("google")
+        if self.googleCNBox.isChecked():
+            curr_server.add("googlecn")
         return curr_server
 
     def get_curr_target(self):
@@ -183,6 +200,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 class TranslateThread(QObject):
     baidu_signal = pyqtSignal(str, name="baidu_signal")
     google_signal = pyqtSignal(str, name="google_signal")
+    googlecn_signal = pyqtSignal(str, name="googlecn_signal")
 
     def __init__(self):
         super(TranslateThread, self).__init__()
@@ -198,6 +216,8 @@ class TranslateThread(QObject):
             self.baidu_signal.emit(res)
         if server == "google":
             self.google_signal.emit(res)
+        if server == "googlecn":
+            self.googlecn_signal.emit(res)
 
     # 停止协程
     def stop_coroutine(self):
@@ -222,6 +242,11 @@ class TranslateThread(QObject):
                 self.loop.create_task(
                     self.do_translate(now["original"], "google", self.cfg["googleTarget"][now["target"]])))
             server.add("google")
+        if MainWindow.googleCNBox.isChecked():
+            self.tasks.append(
+                self.loop.create_task(
+                    self.do_translate(now["original"], "googlecn", self.cfg["googleCNTarget"][now["target"]])))
+            server.add("googlecn")
         self.loop.run_until_complete(asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION))
         cache["server"] = now["server"]
         cache["original"] = now["original"]

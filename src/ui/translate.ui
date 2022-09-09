@@ -117,6 +117,13 @@
          </spacer>
         </item>
         <item>
+         <widget class="QCheckBox" name="googleBox">
+          <property name="text">
+           <string>谷歌翻译</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -130,9 +137,9 @@
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="googleBox">
+         <widget class="QCheckBox" name="googleCNBox">
           <property name="text">
-           <string>谷歌翻译</string>
+           <string>谷歌翻译[CN源]</string>
           </property>
          </widget>
         </item>
@@ -159,6 +166,16 @@
     </item>
     <item>
      <widget class="QTextEdit" name="googleText"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="googleCNLable">
+      <property name="text">
+       <string>谷歌翻译[CN源]</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="googleCNText"/>
     </item>
    </layout>
   </widget>
