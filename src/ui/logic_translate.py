@@ -6,12 +6,10 @@ from multiprocessing import Process
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QMainWindow
 
-import app_clipboard
+import container
 import ui.Ui_translate as Ui_translate
 from api import translator
 from api.instant_translate import InstantTranslate
-from ui import logic_preference, logic_about
-from utils import config_tools
 
 cache = {
     "original": "",
@@ -26,18 +24,19 @@ now = {
     "server": set(),
     "target": []
 }
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 
 class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
-    start_translate_thread = pyqtSignal()
+    start_translate_thread = pyqtSignal(name="start_translate_thread")
 
     def __init__(self, parent=None):
         super(UiTranslate, self).__init__(parent)
         self.setupUi(self)
+        # 默认打开谷歌翻译国内源
         self.googleCNBox.setCheckState(Qt.Checked)
         self.translateButton.clicked.connect(self.on_translate_button_click)
+
         # 设置为未选中状态
         self.baiduBox.setCheckState(Qt.Unchecked)
         self.baiduText.setVisible(False)
@@ -50,9 +49,11 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.googleBox.clicked.connect(self.on_googlebox_click)
         self.googleCNBox.clicked.connect(self.on_googlecnbox_click)
         self.translateNowBox.clicked.connect(self.on_translatenowbox_click)
+
         self.fill_targetbox()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
+        # 设置线程相关
         self.translate_thread = TranslateThread()
         self.thread = QThread(self)
         self.translate_thread.moveToThread(self.thread)
@@ -61,14 +62,19 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.translate_thread.google_signal.connect(self.google_res_set)
         self.translate_thread.googlecn_signal.connect(self.googlecn_res_set)
 
-        # self.targetBox.currentTextChanged.connect(clipboard_change)
+        # 设置即时翻译
         self.instantTranslateMode.currentTextChanged.connect(self.on_set_mode)
-
         self.it = None
         self.it_process = None
+
         # 菜单栏点击事件
         self.translateSetting.triggered.connect(self.on_translate_setting)
         self.aboutSetting.triggered.connect(self.on_about_setting)
+
+        # 下面会用到的变量
+        self.clipboard = container.get_container().clipboard
+        self.ui_preference = container.get_container().ui_preference
+        self.ui_about = container.get_container().ui_about
 
     # 窗口关闭事件
     def closeEvent(self, event):
@@ -76,10 +82,10 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.hide()
 
     def on_translate_setting(self):
-        logic_preference.get_preference().show()
+        self.ui_preference.show()
 
     def on_about_setting(self):
-        logic_about.get_about().show()
+        self.ui_about.show()
 
     def baidu_res_set(self, res):
         if self.additionalBox.isChecked():
@@ -138,7 +144,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.googleCNText.setVisible(self.googleCNBox.isChecked())
 
     def on_translate_button_click(self):
-        clipboard.setText(self.originalText.toPlainText())
+        self.clipboard.setText(self.originalText.toPlainText())
 
     def on_translatenowbox_click(self):
         if self.translateNowBox.isChecked():
@@ -172,7 +178,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.on_translatenowbox_click()
 
     def fill_targetbox(self):
-        targets = config_tools.get_config_constant()["targetList"]
+        targets = container.get_container().config.target_list
         self.targetBox.addItems(targets)
         self.instantTranslateMode.addItems({"MODE 0": 0, "MODE 1": 1})
 
@@ -206,11 +212,11 @@ class TranslateThread(QObject):
         super(TranslateThread, self).__init__()
         self.tasks = []
         self.loop = asyncio.new_event_loop()
-        self.cfg = config_tools.get_config_constant()
-        self.transObject = translator.Translator()
+        self.cfg = container.get_container().config
+        self.trans_object = translator.Translator()
 
     async def do_translate(self, original, server: str, text_to):
-        res, success = await self.transObject.translate(original, server, text_to)
+        res, success = await self.trans_object.translate(original, server, text_to)
         print("server: {}, res: {}".format(server, res))
         if server == "baidu":
             self.baidu_signal.emit(res)
@@ -226,26 +232,27 @@ class TranslateThread(QObject):
         self.loop.stop()
 
     def run(self):
+        main_window = container.get_container().main_window
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
         self.tasks = []
         server = set()
         for task in self.tasks:
             task.cancel()
-        if MainWindow.baiduBox.isChecked():
+        if main_window.baiduBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], "baidu", self.cfg["baiduTarget"][now["target"]])))
+                    self.do_translate(now["original"], "baidu", self.cfg.baidu_target[now["target"]])))
             server.add("baidu")
-        if MainWindow.googleBox.isChecked():
+        if main_window.googleBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], "google", self.cfg["googleTarget"][now["target"]])))
+                    self.do_translate(now["original"], "google", self.cfg.google_target[now["target"]])))
             server.add("google")
-        if MainWindow.googleCNBox.isChecked():
+        if main_window.googleCNBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], "googlecn", self.cfg["googleCNTarget"][now["target"]])))
+                    self.do_translate(now["original"], "googlecn", self.cfg.googlecn_target[now["target"]])))
             server.add("googlecn")
         self.loop.run_until_complete(asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION))
         cache["server"] = now["server"]
@@ -254,12 +261,14 @@ class TranslateThread(QObject):
 
 
 def clipboard_change():
+    clipboard = container.get_container().clipboard
     is_selection = clipboard.Clipboard
-    if MainWindow.instantTranslateMode.currentText() == "MODE 1" and MainWindow.translateNowBox.isChecked():
+    main_window = container.get_container().main_window
+    if main_window.instantTranslateMode.currentText() == "MODE 1" and main_window.translateNowBox.isChecked():
         is_selection = clipboard.Selection
     data = clipboard.mimeData(is_selection)
-    target = MainWindow.get_curr_target()
-    server = MainWindow.get_curr_server()
+    target = main_window.get_curr_target()
+    server = main_window.get_curr_server()
     if data.text() == cache["original"] and target == cache["target"] and server == cache["server"]:
         pass
     else:
@@ -267,26 +276,22 @@ def clipboard_change():
             pass
         else:
             original = data.text()
-            MainWindow.set_original_text(original)
-            if MainWindow.isHidden():
-                MainWindow.show()
+            main_window.set_original_text(original)
+            if main_window.isHidden():
+                main_window.show()
             now["original"] = original
             now["target"] = target
             now["server"] = server
             global last_time
             if time.time() - last_time < 1:
                 time.sleep(1)
-            if MainWindow.originalText.toPlainText() == original:
+            if main_window.originalText.toPlainText() == original:
                 last_time = time.time()
-                MainWindow.start_translate_thread.emit()
+                main_window.start_translate_thread.emit()
+            else:
+                last_time = time.time()
+                main_window.start_translate_thread.emit()
 
 
-MainWindow = UiTranslate()
-_, clipboard = app_clipboard.get_app_clipboard()
-clipboard.dataChanged.connect(clipboard_change)
-clipboard.selectionChanged.connect(clipboard_change)
+
 last_time = time.time()
-
-
-def get_MainWindow():
-    return MainWindow

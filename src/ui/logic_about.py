@@ -18,9 +18,3 @@ class UiAbout(QMainWindow, Ui_about.Ui_About):
         else:
             QMessageBox.information(self, "提示", "有新版本，请通过yay更新")
 
-
-
-About = UiAbout()
-
-def get_about():
-    return About

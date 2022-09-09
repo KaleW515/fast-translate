@@ -3,9 +3,7 @@ import sys
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSystemTrayIcon, QAction, QMenu
 
-import app_clipboard
-import ui.logic_translate as logic_translate
-from utils import config_tools
+import container
 
 
 class SystemTray:
@@ -44,9 +42,9 @@ class SystemTray:
 
 
 if __name__ == '__main__':
-    config_tools.check_config()
-    app, _ = app_clipboard.get_app_clipboard()
-    MainWindow = logic_translate.get_MainWindow()
-    MainWindow.show()
-    MainWindow.thread.start()
-    ti = SystemTray(app, MainWindow)
+    container = container.get_container()
+    container.invoke_init()
+    main_window = container.main_window
+    main_window.show()
+    main_window.thread.start()
+    ti = SystemTray(container.app, main_window)

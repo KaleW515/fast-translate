@@ -1,19 +1,16 @@
 from api.server import baidu, google, google_cn
-from utils import config_tools
 
 
 class Translator:
 
     def __init__(self):
+        import container
+        self.config = container.get_container().config
         self.__instance = {
             "baidu": baidu.BaiduTranslator(),
-            "googlecn": google_cn.GoogleCNTranslator()
+            "googlecn": google_cn.GoogleCNTranslator(),
+            "google": google.GoogleTranslator(proxies=self.config.google_proxies)
         }
-        if config_tools.get_config_secret()["googleSecret"]["proxies"] != "":
-            self.__instance["google"] = google.GoogleTranslator(
-                proxies=config_tools.get_config_secret()["googleSecret"]["proxies"])
-        else:
-            self.__instance["google"] = google.GoogleTranslator()
 
     async def translate(self, original, translator: str, target):
         res, success = await self.__instance[translator].translate(original, target=target)
