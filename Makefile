@@ -20,10 +20,10 @@ build: clear
 	mkdir -p build/fast-translate/usr/share/icons
 	mkdir -p build/fast-translate$(APP_PATH)/fast-translate
 
-	cp pkg/ftranslate build/fast-translate/usr/bin/
+	cp pkg/aur/ftranslate build/fast-translate/usr/bin/
 
 	cp src/config/icon/logo.svg.png build/fast-translate/usr/share/icons/fast-translate.png
-	cp pkg/fast-translate.desktop build/fast-translate/usr/share/applications/
+	cp pkg/aur/fast-translate.desktop build/fast-translate/usr/share/applications/
 
 	cp -r src/* build/fast-translate$(APP_PATH)/fast-translate/
 
