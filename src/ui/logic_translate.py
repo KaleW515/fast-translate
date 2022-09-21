@@ -155,22 +155,24 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
                 self.it_process.start()
                 logging.info("translate now box is checked")
             else:
-                self.it.release_key()
-                self.it_process.terminate()
-                self.it_process.join()
-                self.it = None
-                self.it_process = None
+                if self.it is not None:
+                    self.it.release_key()
+                    self.it = None
+                if self.it_process is not None:
+                    self.it_process.terminate()
+                    self.it_process.join()
+                    self.it_process = None
                 logging.info("translate now process is stopped")
         else:
             # 停止it_process进程
             if self.it is not None:
                 self.it.release_key()
+                self.it = None
             logging.info("translate thread release key")
             if self.it_process is not None:
                 self.it_process.terminate()
                 self.it_process.join()
                 self.it_process = None
-            self.it = None
             logging.info("translate now process is stopped")
 
     def on_set_mode(self):
@@ -291,7 +293,6 @@ def clipboard_change():
             else:
                 last_time = time.time()
                 main_window.start_translate_thread.emit()
-
 
 
 last_time = time.time()
