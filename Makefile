@@ -12,7 +12,6 @@ clear:
 	rm -rf ./tempCodeRunnerFile*
 	rm -rf ./cache
 	rm -rf *.spec
-	rm -rf ./build
 
 build: clear
 	mkdir -p build/fast-translate/usr/bin
@@ -22,7 +21,7 @@ build: clear
 
 	cp pkg/aur/ftranslate build/fast-translate/usr/bin/
 
-	cp src/config/icon/logo.svg.png build/fast-translate/usr/share/icons/fast-translate.png
+	cp src/data/icon/logo.svg.png build/fast-translate/usr/share/icons/fast-translate.png
 	cp pkg/aur/fast-translate.desktop build/fast-translate/usr/share/applications/
 
 	cp -r src/* build/fast-translate$(APP_PATH)/fast-translate/

@@ -1,4 +1,5 @@
-from api.server import baidu, google, google_cn
+from core.api.server import baidu
+from core.api.server import google, google_cn
 
 
 class Translator:

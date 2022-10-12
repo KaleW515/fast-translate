@@ -16,7 +16,7 @@ class SystemTray:
         self.run()
 
     def init_icon(self):
-        self.tp.setIcon(QIcon('config/icon/logo.svg.png'))
+        self.tp.setIcon(QIcon('data/icon/logo.svg.png'))
 
     def act(self, reason):
         if reason == 2 or reason == 3:

@@ -116,8 +116,8 @@ class GoogleTranslator:
 
 
 if __name__ == '__main__':
-    # client = GoogleTranslator(proxies={'https://': 'http://localhost:7890'})
-    client = GoogleTranslator()
+    client = GoogleTranslator(proxies={'https://': 'http://localhost:7890'})
+    # client = GoogleTranslator()
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(client.translate('hello', target='zh'))
     loop.run_until_complete(future)

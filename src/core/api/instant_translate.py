@@ -6,7 +6,10 @@ from multiprocessing import Process
 from pynput import mouse, keyboard
 from pynput.keyboard import Key
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+from ..utils import log
+
+logging.basicConfig(level=log.get_log_config()[0], filename=log.get_log_config()[1],
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 
 class InstantTranslate:
@@ -25,7 +28,7 @@ class InstantTranslate:
         # print(x, y)
 
     def sync_desc(self):
-        logging.info("sync desc thread start")
+        logging.debug("sync desc thread start")
         while 1:
             time.sleep(0.6)
             self.lock.acquire()
@@ -34,7 +37,7 @@ class InstantTranslate:
             self.lock.release()
 
     def press_copy(self):
-        logging.info("press copy thread start")
+        logging.debug("press copy thread start")
         while 1:
             time.sleep(1)
             self.lock.acquire()
@@ -46,7 +49,7 @@ class InstantTranslate:
                         self.k.release(Key.ctrl)
                         self.k.release("c")
                         self.have_copy = True
-                        logging.info("press thread instant translate press copy")
+                        logging.debug("press thread instant translate press copy")
                     except Exception as e:
                         logging.error("press thread instant translate press copy error: %s" % e)
                         self.k.release(Key.ctrl)
@@ -57,9 +60,9 @@ class InstantTranslate:
         try:
             self.k.release(Key.ctrl)
             self.k.release("c")
-            logging.info("instant translate release key")
+            logging.debug("instant translate release key")
         except Exception as e:
-            logging.info("instant translate release key error: %s" % e)
+            logging.debug("instant translate release key error: %s" % e)
             pass
 
     def run(self):

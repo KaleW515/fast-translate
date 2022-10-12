@@ -1,7 +1,7 @@
 import ui.Ui_about as Ui_about
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtCore import *
-from utils import version
+from core.utils import version
 
 
 class UiAbout(QMainWindow, Ui_about.Ui_About):

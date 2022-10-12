@@ -24,7 +24,7 @@ class Ui_Preference(object):
         Preference.setMaximumSize(QtCore.QSize(800, 350))
         Preference.setSizeIncrement(QtCore.QSize(0, 0))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./config/icon/settings.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./data/icon/settings.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Preference.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(Preference)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

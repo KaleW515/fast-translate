@@ -8,8 +8,9 @@ from PyQt5.QtWidgets import QMainWindow
 
 import container
 import ui.Ui_translate as Ui_translate
-from api import translator
-from api.instant_translate import InstantTranslate
+from core.api import translator
+from core.api.instant_translate import InstantTranslate
+from ..utils import log
 
 cache = {
     "original": "",
@@ -24,7 +25,9 @@ now = {
     "server": set(),
     "target": []
 }
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+logging.basicConfig(level=log.get_log_config()[0], filename=log.get_log_config()[1],
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 
 class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
@@ -107,29 +110,29 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 
     def stop_thread(self):
         if not self.thread.isRunning():
-            logging.info("translate thread is not running")
+            logging.debug("translate thread is not running")
             return
         else:
-            logging.info("translate thread is running")
+            logging.debug("translate thread is running")
             self.thread.quit()
             self.thread.wait()
-            logging.info("translate thread is stopped")
+            logging.debug("translate thread is stopped")
 
     def stop_process(self):
         if self.it_process is None:
-            logging.info("translate now process is not running")
+            logging.debug("translate now process is not running")
             return
         if not self.it_process.is_alive():
-            logging.info("it_process is not alive")
+            logging.debug("it_process is not alive")
             return
         else:
-            logging.info("it_process is alive")
+            logging.debug("it_process is alive")
             if self.it is not None:
                 self.it.release_key()
             if self.it_process is not None:
                 self.it_process.terminate()
                 self.it_process.join()
-            logging.info("it_process is stopped")
+            logging.debug("it_process is stopped")
 
     def on_baidubox_click(self):
         self.baiduLabel.setVisible(self.baiduBox.isChecked())
@@ -153,7 +156,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
                 self.it.release_key()
                 self.it_process = Process(target=self.it.run)
                 self.it_process.start()
-                logging.info("translate now box is checked")
+                logging.debug("translate now box is checked")
             else:
                 if self.it is not None:
                     self.it.release_key()
@@ -162,21 +165,21 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
                     self.it_process.terminate()
                     self.it_process.join()
                     self.it_process = None
-                logging.info("translate now process is stopped")
+                logging.debug("translate now process is stopped")
         else:
             # 停止it_process进程
             if self.it is not None:
                 self.it.release_key()
                 self.it = None
-            logging.info("translate thread release key")
+            logging.debug("translate thread release key")
             if self.it_process is not None:
                 self.it_process.terminate()
                 self.it_process.join()
                 self.it_process = None
-            logging.info("translate now process is stopped")
+            logging.debug("translate now process is stopped")
 
     def on_set_mode(self):
-        logging.info("now mode is {}".format(self.instantTranslateMode.currentText()))
+        logging.debug("now mode is {}".format(self.instantTranslateMode.currentText()))
         self.on_translatenowbox_click()
 
     def fill_targetbox(self):
