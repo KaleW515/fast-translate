@@ -31,9 +31,9 @@ class Container:
         self.after_init()
 
     def after_init(self):
-        from core.logic.logic_translate import clipboard_change
+        from core.logic.logic_translate import clipboard_change, selection_change
         self.clipboard.dataChanged.connect(clipboard_change)
-        self.clipboard.selectionChanged.connect(clipboard_change)
+        self.clipboard.selectionChanged.connect(selection_change)
 
     def do_logger_init(self):
         dev = False

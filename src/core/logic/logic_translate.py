@@ -267,11 +267,18 @@ class TranslateThread(QObject):
 
 def clipboard_change():
     clipboard = container.get_container().clipboard
-    is_selection = clipboard.Clipboard
+    submit_translate(clipboard.mimeData(clipboard.Clipboard))
+
+
+def selection_change():
+    clipboard = container.get_container().clipboard
     main_window = container.get_container().main_window
     if main_window.instantTranslateMode.currentText() == "MODE 1" and main_window.translateNowBox.isChecked():
-        is_selection = clipboard.Selection
-    data = clipboard.mimeData(is_selection)
+        submit_translate(clipboard.mimeData(clipboard.Selection))
+
+
+def submit_translate(data):
+    main_window = container.get_container().main_window
     target = main_window.get_curr_target()
     server = main_window.get_curr_server()
     if data.text() == cache["original"] and target == cache["target"] and server == cache["server"]:
