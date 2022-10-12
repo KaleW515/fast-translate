@@ -8,8 +8,8 @@
 - [x] 支持划词即时翻译
 - [x] 支持多语种翻译
 - [x] 支持追加翻译
-
 - 使用pyqt5开发，借鉴[兰译](https://github.com/yuhldr/ldr-translate)的部分代码进行开发，在原作基础上完善了即时翻译，多翻译源同时翻译等功能。
+- 谷歌翻译国内源无法使用的解决方案：https://zhuanlan.zhihu.com/p/569452790
 
 ## Usage
 
