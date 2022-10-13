@@ -10,5 +10,6 @@ def get_log_config():
     filename = None
     if dev:
         level = logging.WARN
-        filename = "../log/ft.log"
+        # filename = "../log/ft.log"
+        filename = None
     return level, filename
