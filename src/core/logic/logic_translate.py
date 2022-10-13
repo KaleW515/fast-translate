@@ -66,7 +66,6 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.translate_thread.googlecn_signal.connect(self.googlecn_res_set)
 
         # 设置即时翻译
-        self.instantTranslateMode.currentTextChanged.connect(self.on_set_mode)
         self.it = None
         self.it_process = None
 
@@ -151,41 +150,30 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 
     def on_translatenowbox_click(self):
         if self.translateNowBox.isChecked():
-            if self.instantTranslateMode.currentText() == "MODE 0":
-                self.it = InstantTranslate()
-                self.it.release_key()
-                self.it_process = Process(target=self.it.run)
-                self.it_process.start()
-                logging.debug("translate now box is checked")
-            else:
-                if self.it is not None:
-                    self.it.release_key()
-                    self.it = None
-                if self.it_process is not None:
-                    self.it_process.terminate()
-                    self.it_process.join()
-                    self.it_process = None
-                logging.debug("translate now process is stopped")
+            self.do_release_it_process()
+            self.it = InstantTranslate()
+            self.it.release_key()
+            self.it_process = Process(target=self.it.run)
+            self.it_process.start()
+            logging.debug("translate now box is checked")
         else:
-            # 停止it_process进程
-            if self.it is not None:
-                self.it.release_key()
-                self.it = None
-            logging.debug("translate thread release key")
-            if self.it_process is not None:
-                self.it_process.terminate()
-                self.it_process.join()
-                self.it_process = None
-            logging.debug("translate now process is stopped")
+            self.do_release_it_process()
 
-    def on_set_mode(self):
-        logging.debug("now mode is {}".format(self.instantTranslateMode.currentText()))
-        self.on_translatenowbox_click()
+    def do_release_it_process(self):
+        # 停止it_process进程
+        if self.it is not None:
+            self.it.release_key()
+            self.it = None
+            logging.debug("translate thread release key")
+        if self.it_process is not None:
+            self.it_process.terminate()
+            self.it_process.join()
+            self.it_process = None
+            logging.debug("translate now process is stopped")
 
     def fill_targetbox(self):
         targets = container.get_container().config.target_list
         self.targetBox.addItems(targets)
-        self.instantTranslateMode.addItems({"MODE 0": 0, "MODE 1": 1})
 
     def get_curr_server(self):
         curr_server = set()
@@ -268,13 +256,6 @@ class TranslateThread(QObject):
 def clipboard_change():
     clipboard = container.get_container().clipboard
     submit_translate(clipboard.mimeData(clipboard.Clipboard))
-
-
-def selection_change():
-    clipboard = container.get_container().clipboard
-    main_window = container.get_container().main_window
-    if main_window.instantTranslateMode.currentText() == "MODE 1" and main_window.translateNowBox.isChecked():
-        submit_translate(clipboard.mimeData(clipboard.Selection))
 
 
 def submit_translate(data):

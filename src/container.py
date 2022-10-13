@@ -27,13 +27,11 @@ class Container:
         self.ui_about = UiAbout()
         self.main_window = UiTranslate()
 
-        # self.do_logger_init()
         self.after_init()
 
     def after_init(self):
-        from core.logic.logic_translate import clipboard_change, selection_change
+        from core.logic.logic_translate import clipboard_change
         self.clipboard.dataChanged.connect(clipboard_change)
-        self.clipboard.selectionChanged.connect(selection_change)
 
     def do_logger_init(self):
         dev = False

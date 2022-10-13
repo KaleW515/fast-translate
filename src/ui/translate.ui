@@ -76,9 +76,6 @@
          </spacer>
         </item>
         <item>
-         <widget class="QComboBox" name="instantTranslateMode"/>
-        </item>
-        <item>
          <widget class="QCheckBox" name="translateNowBox">
           <property name="text">
            <string>即时翻译</string>
