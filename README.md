@@ -1,6 +1,10 @@
 # fast-translate
 一款适用于Linux系统的翻译软件，支持选中即翻译，方便文献阅读等。
 
+github: [fast-translate](https://github.com/KaleW515/fast-translate)
+
+gitee: [fast-trasnlate](https://gitee.com/kalew515/fast-translate)
+
 如果觉得好用就点个:star:吧～
 
 - [x] 支持复制自动翻译
