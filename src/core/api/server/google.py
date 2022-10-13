@@ -57,7 +57,7 @@ class GoogleTranslator:
             if q == '':
                 return "没有复制任何内容", True
 
-        for i in range(1, 4):
+        for i in range(1, 2):
             response = await self.__translate(q=q, target=target, source=source, fmt=fmt, v='1.0')
             if response is None:
                 return "网络异常，请检查代理", False

@@ -37,5 +37,5 @@ class BaiduTranslator:
                     return res['trans_result'][0]['dst'], True
                 except:
                     return "", False
-            else:
-                return "", False
+            elif "error_msg" in res:
+                return res["error_msg"], False

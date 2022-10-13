@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import time
 from multiprocessing import Process
 
 from PyQt5.QtCore import *
@@ -224,14 +223,18 @@ class TranslateThread(QObject):
             task.cancel()
         self.loop.stop()
 
+    def do_clean_tasks(self):
+        tasks = []
+        for task in self.tasks:
+            if not task.done():
+                tasks.append(task)
+        self.tasks = tasks
+
     def run(self):
         main_window = container.get_container().main_window
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-        self.tasks = []
         server = set()
-        for task in self.tasks:
-            task.cancel()
+        # 清理过期任务
+        self.do_clean_tasks()
         if main_window.baiduBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
@@ -275,15 +278,5 @@ def submit_translate(data):
             now["original"] = original
             now["target"] = target
             now["server"] = server
-            global last_time
-            if time.time() - last_time < 1:
-                time.sleep(1)
             if main_window.originalText.toPlainText() == original:
-                last_time = time.time()
                 main_window.start_translate_thread.emit()
-            else:
-                last_time = time.time()
-                main_window.start_translate_thread.emit()
-
-
-last_time = time.time()
