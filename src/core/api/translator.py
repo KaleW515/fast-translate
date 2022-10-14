@@ -10,8 +10,8 @@ class Translator:
         self.config = container.get_container().config
         self.__instance = {
             TranslatorEnums.BAIDU.value: baidu.BaiduTranslator(self.config.baidu_app_id, self.config.baidu_app_key),
-            TranslatorEnums.GOOGLE.value: google_cn.GoogleCNTranslator(),
-            TranslatorEnums.GOOGLECN.value: google.GoogleTranslator(proxies=self.config.google_proxies)
+            TranslatorEnums.GOOGLE.value: google.GoogleTranslator(proxies=self.config.google_proxies),
+            TranslatorEnums.GOOGLECN.value: google_cn.GoogleCNTranslator()
         }
 
     async def translate(self, original, translator, target):
