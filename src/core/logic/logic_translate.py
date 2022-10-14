@@ -9,6 +9,7 @@ import container
 import ui.Ui_translate as Ui_translate
 from core.api import translator
 from core.api.instant_translate import InstantTranslate
+from core.config.translator_enums import TranslatorEnums
 from ..utils import log
 
 cache = {
@@ -177,11 +178,11 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
     def get_curr_server(self):
         curr_server = set()
         if self.baiduBox.isChecked():
-            curr_server.add("baidu")
+            curr_server.add(TranslatorEnums.BAIDU.value)
         if self.googleBox.isChecked():
-            curr_server.add("google")
+            curr_server.add(TranslatorEnums.GOOGLE.value)
         if self.googleCNBox.isChecked():
-            curr_server.add("googlecn")
+            curr_server.add(TranslatorEnums.GOOGLECN.value)
         return curr_server
 
     def get_curr_target(self):
@@ -196,9 +197,9 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 
 
 class TranslateThread(QObject):
-    baidu_signal = pyqtSignal(str, name="baidu_signal")
-    google_signal = pyqtSignal(str, name="google_signal")
-    googlecn_signal = pyqtSignal(str, name="googlecn_signal")
+    baidu_signal = pyqtSignal(str, name=TranslatorEnums.BAIDU.value + "_signal")
+    google_signal = pyqtSignal(str, name=TranslatorEnums.GOOGLE.value + "_signal")
+    googlecn_signal = pyqtSignal(str, name=TranslatorEnums.GOOGLECN.value + "_signal")
 
     def __init__(self):
         super(TranslateThread, self).__init__()
@@ -207,14 +208,14 @@ class TranslateThread(QObject):
         self.cfg = container.get_container().config
         self.trans_object = translator.Translator()
 
-    async def do_translate(self, original, server: str, text_to):
+    async def do_translate(self, original, server, text_to):
         res, success = await self.trans_object.translate(original, server, text_to)
         print("server: {}, res: {}".format(server, res))
-        if server == "baidu":
+        if server == TranslatorEnums.BAIDU.value:
             self.baidu_signal.emit(res)
-        if server == "google":
+        if server == TranslatorEnums.GOOGLE.value:
             self.google_signal.emit(res)
-        if server == "googlecn":
+        if server == TranslatorEnums.GOOGLECN.value:
             self.googlecn_signal.emit(res)
 
     # 停止协程
@@ -238,18 +239,21 @@ class TranslateThread(QObject):
         if main_window.baiduBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], "baidu", self.cfg.baidu_target[now["target"]])))
-            server.add("baidu")
+                    self.do_translate(now["original"], TranslatorEnums.BAIDU.value,
+                                      self.cfg.baidu_target[now["target"]])))
+            server.add(TranslatorEnums.BAIDU.value)
         if main_window.googleBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], "google", self.cfg.google_target[now["target"]])))
-            server.add("google")
+                    self.do_translate(now["original"], TranslatorEnums.GOOGLE.value,
+                                      self.cfg.google_target[now["target"]])))
+            server.add(TranslatorEnums.GOOGLE.value)
         if main_window.googleCNBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], "googlecn", self.cfg.googlecn_target[now["target"]])))
-            server.add("googlecn")
+                    self.do_translate(now["original"], TranslatorEnums.GOOGLECN.value,
+                                      self.cfg.googlecn_target[now["target"]])))
+            server.add(TranslatorEnums.GOOGLECN.value)
         self.loop.run_until_complete(asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION))
         cache["server"] = now["server"]
         cache["original"] = now["original"]
@@ -258,7 +262,8 @@ class TranslateThread(QObject):
 
 def clipboard_change():
     clipboard = container.get_container().clipboard
-    submit_translate(clipboard.mimeData(clipboard.Clipboard))
+    if not container.get_container().main_window.isMinimized():
+        submit_translate(clipboard.mimeData(clipboard.Clipboard))
 
 
 def submit_translate(data):

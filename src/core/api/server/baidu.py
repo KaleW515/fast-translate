@@ -7,7 +7,7 @@ import httpx
 
 
 class BaiduTranslator:
-    def __init__(self):
+    def __init__(self, app_id, app_key):
         import container
         self.config = container.get_container().config
         self.url = "https://fanyi-api.baidu.com/api/trans/vip/translate?q={}&from={}&to={}&appid={}&salt={}&sign={}"
@@ -15,7 +15,8 @@ class BaiduTranslator:
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/102.0.5005.61 Safari/537.36"
         }
-        self.app_id, self.app_key = self.config.baidu_app_id, self.config.baidu_app_key
+        self.app_id = app_id
+        self.app_key = app_key
 
     def __get_sign_salt(self, original):
         salt = random.randint(32768, 65536)
