@@ -3,8 +3,10 @@ import json
 
 import httpx
 
+from core.api.abstract_translator import AbstractTranslator
 
-class GoogleCNTranslator:
+
+class GoogleCNTranslator(AbstractTranslator):
     def __init__(self):
         self.cli = "gtx"
         self.dt = "t"
@@ -14,7 +16,10 @@ class GoogleCNTranslator:
                           "Chrome/102.0.5005.61 Safari/537.36"
         }
 
-    async def translate(self, original, text_from="auto", target="zh") -> (str, bool):
+    async def translate(self, original, target):
+        return await self.__do_translate(original, target=target)
+
+    async def __do_translate(self, original, text_from="auto", target="zh") -> (str, bool):
         url = self.url.format(self.cli, self.dt, text_from, target, original)
         async with httpx.AsyncClient() as client:
             res = await client.post(url=url, headers=self.headers)

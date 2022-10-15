@@ -178,11 +178,11 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
     def get_curr_server(self):
         curr_server = set()
         if self.baiduBox.isChecked():
-            curr_server.add(TranslatorEnums.BAIDU.value)
+            curr_server.add(TranslatorEnums.BAIDU)
         if self.googleBox.isChecked():
-            curr_server.add(TranslatorEnums.GOOGLE.value)
+            curr_server.add(TranslatorEnums.GOOGLE)
         if self.googleCNBox.isChecked():
-            curr_server.add(TranslatorEnums.GOOGLECN.value)
+            curr_server.add(TranslatorEnums.GOOGLECN)
         return curr_server
 
     def get_curr_target(self):
@@ -197,9 +197,10 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 
 
 class TranslateThread(QObject):
-    baidu_signal = pyqtSignal(str, name=TranslatorEnums.BAIDU.value + "_signal")
-    google_signal = pyqtSignal(str, name=TranslatorEnums.GOOGLE.value + "_signal")
-    googlecn_signal = pyqtSignal(str, name=TranslatorEnums.GOOGLECN.value + "_signal")
+    signal_suffix = "_signal"
+    baidu_signal = pyqtSignal(str, name=TranslatorEnums.BAIDU.name + signal_suffix)
+    google_signal = pyqtSignal(str, name=TranslatorEnums.GOOGLE.name + signal_suffix)
+    googlecn_signal = pyqtSignal(str, name=TranslatorEnums.GOOGLECN.name + signal_suffix)
 
     def __init__(self):
         super(TranslateThread, self).__init__()
@@ -210,12 +211,12 @@ class TranslateThread(QObject):
 
     async def do_translate(self, original, server, text_to):
         res, success = await self.trans_object.translate(original, server, text_to)
-        print("server: {}, res: {}".format(server, res))
-        if server == TranslatorEnums.BAIDU.value:
+        logging.info("server: {}, res: {}".format(server, res))
+        if server == TranslatorEnums.BAIDU:
             self.baidu_signal.emit(res)
-        if server == TranslatorEnums.GOOGLE.value:
+        if server == TranslatorEnums.GOOGLE:
             self.google_signal.emit(res)
-        if server == TranslatorEnums.GOOGLECN.value:
+        if server == TranslatorEnums.GOOGLECN:
             self.googlecn_signal.emit(res)
 
     # 停止协程
@@ -239,21 +240,21 @@ class TranslateThread(QObject):
         if main_window.baiduBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], TranslatorEnums.BAIDU.value,
+                    self.do_translate(now["original"], TranslatorEnums.BAIDU,
                                       self.cfg.baidu_target[now["target"]])))
-            server.add(TranslatorEnums.BAIDU.value)
+            server.add(TranslatorEnums.BAIDU)
         if main_window.googleBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], TranslatorEnums.GOOGLE.value,
+                    self.do_translate(now["original"], TranslatorEnums.GOOGLE,
                                       self.cfg.google_target[now["target"]])))
-            server.add(TranslatorEnums.GOOGLE.value)
+            server.add(TranslatorEnums.GOOGLE)
         if main_window.googleCNBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], TranslatorEnums.GOOGLECN.value,
+                    self.do_translate(now["original"], TranslatorEnums.GOOGLECN,
                                       self.cfg.googlecn_target[now["target"]])))
-            server.add(TranslatorEnums.GOOGLECN.value)
+            server.add(TranslatorEnums.GOOGLECN)
         self.loop.run_until_complete(asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION))
         cache["server"] = now["server"]
         cache["original"] = now["original"]
@@ -277,11 +278,10 @@ def submit_translate(data):
             pass
         else:
             original = data.text()
-            main_window.set_original_text(original)
-            if main_window.isHidden():
-                main_window.show()
+            main_window.set_original_text(" " + original)
+            # if main_window.isHidden():
+            #     main_window.show()
             now["original"] = original
             now["target"] = target
             now["server"] = server
-            if main_window.originalText.toPlainText() == original:
-                main_window.start_translate_thread.emit()
+            main_window.start_translate_thread.emit()

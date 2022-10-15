@@ -4,7 +4,8 @@ import os
 import shutil
 
 from core.config.constants import Constants
-from ..utils import log
+from core.config.secrets import baidu_secrets, google_secrets
+from core.utils import log
 
 logging.basicConfig(level=log.get_log_config()[0], filename=log.get_log_config()[1],
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -27,9 +28,9 @@ class Configuration:
         self.google_target = None
         self.googlecn_target = None
 
-        self.baidu_app_id = None
-        self.baidu_app_key = None
-        self.google_proxies = None
+        self.baidu_secrets = None
+        self.google_secrets = None
+
         self.check_config()
         self.constant_init()
         self.secret_init()
@@ -46,17 +47,25 @@ class Configuration:
         try:
             with open(self.config_file_path, "r") as f:
                 cfg = json.load(f)
-                if cfg[self.baidu_secret_name]["appid"] != "":
-                    self.baidu_app_id = cfg[self.baidu_secret_name]["appid"]
-                if cfg[self.baidu_secret_name]["appKey"] != "":
-                    self.baidu_app_key = cfg[self.baidu_secret_name]["appKey"]
+                self.__do_baidu_secret_init(cfg)
 
-                if cfg[self.google_secret_name]["proxies"] != "":
-                    self.google_proxies = cfg[self.google_secret_name]["proxies"]
+                self.__do_google_secret_init(cfg)
             logging.info("init secret success ~")
         except:
             raise IOError("parse config.json failed, please check again ~")
         return
+
+    def __do_baidu_secret_init(self, cfg: dict):
+        self.baidu_secrets = baidu_secrets.BaiduSecrets()
+        if cfg[self.baidu_secret_name]["appid"] != "":
+            self.baidu_secrets.app_id = cfg[self.baidu_secret_name]["appid"]
+        if cfg[self.baidu_secret_name]["appKey"] != "":
+            self.baidu_secrets.app_key = cfg[self.baidu_secret_name]["appKey"]
+
+    def __do_google_secret_init(self, cfg: dict):
+        self.google_secrets = google_secrets.GoogleSecrets()
+        if cfg[self.google_secret_name]["proxies"] != "":
+            self.google_secrets.proxies = cfg[self.google_secret_name]["proxies"]
 
     def check_config(self):
         os.makedirs(self.config_dir_path, exist_ok=True)
@@ -105,6 +114,6 @@ class Configuration:
 
 if __name__ == '__main__':
     config = Configuration()
-    print(config.google_proxies)
+    print(config.google_secret.proxies)
     config.change_google_proxy("https://", "http://127.0.0.1:7890")
-    print(config.google_proxies)
+    print(config.google_secret.proxies)

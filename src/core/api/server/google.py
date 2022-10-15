@@ -4,6 +4,9 @@ from typing import List, Union, Dict
 
 import httpx
 
+from core.api.abstract_translator import AbstractTranslator
+from core.config.secrets.google_secrets import GoogleSecrets
+
 
 class TranslateResponse:
 
@@ -21,7 +24,7 @@ class TranslateResponse:
                                              f'{repr(self.detected_source_language)}, model={repr(self.model)})'
 
 
-class GoogleTranslator:
+class GoogleTranslator(AbstractTranslator):
     def __init__(
             self,
             target: str = 'zh-CN',
@@ -29,7 +32,7 @@ class GoogleTranslator:
             fmt='html',
             user_agent: str = None,
             domain: str = 'com',
-            proxies: Dict = None
+            secrets: GoogleSecrets = None
     ):
         self.target = target
         self.source = source
@@ -46,9 +49,12 @@ class GoogleTranslator:
         self.DETECT_URL: str = f'{self.BASE_URL}/translate_a/single'
         self.TRANSLATE_URL: str = f'{self.BASE_URL}/translate_a/t'
         self.TTS_URL: str = f'{self.BASE_URL}/translate_tts'
-        self.proxies = proxies
+        self.proxies = secrets.proxies
 
-    async def translate(
+    async def translate(self, original, target):
+        return await self.__do_translate(original, target=target)
+
+    async def __do_translate(
             self, q: Union[str, List[str]], target: str = None, source: str = None, fmt: str = None
     ) -> (str, bool):
         if not q:
@@ -58,7 +64,7 @@ class GoogleTranslator:
                 return "没有复制任何内容", True
 
         for i in range(1, 2):
-            response = await self.__translate(q=q, target=target, source=source, fmt=fmt, v='1.0')
+            response = await self.__do_translate0(q=q, target=target, source=source, fmt=fmt, v='1.0')
             if response is None:
                 return "网络异常，请检查代理", False
             if response.status_code == 429:
@@ -73,7 +79,7 @@ class GoogleTranslator:
             return ll[0].translated_text, True
         return response.text, False
 
-    async def __translate(
+    async def __do_translate0(
             self, q: Union[str, List[str]], target: str = None, source: str = None, fmt: str = None, v: str = None
     ):
         if target is None:
