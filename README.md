@@ -12,8 +12,42 @@ gitee: [fast-trasnlate](https://gitee.com/kalew515/fast-translate)
 - [x] 支持划词即时翻译
 - [x] 支持多语种翻译
 - [x] 支持追加翻译
-- 使用pyqt5开发，借鉴[兰译](https://github.com/yuhldr/ldr-translate)的部分代码进行开发，在原作基础上完善了即时翻译，多翻译源同时翻译等功能。
-- 谷歌翻译国内源无法使用的解决方案：https://zhuanlan.zhihu.com/p/569452790
+- **谷歌翻译国内源无法使用的解决方案**：https://zhuanlan.zhihu.com/p/569452790
+
+## Installtion
+
+**注：本项目基于qt开发，在kde等基于qt的平台上体验较好**
+
+### 手动编译安装
+
+1. 下载源码到本地
+
+   `git clone https://github.com/KaleW515/fast-translate.git`
+
+2. 进入代码目录
+
+   `cd fast-translate`
+
+3. 确保安装了make，如果安装了这一步可以跳过，如果没有安装则需要进行安装
+
+   `sudo pacman -S make`
+
+4. 编译安装
+
+   ```cmake
+   make build
+   make install
+   ```
+
+### Arch Linux & Manjaro
+
+如果你是arch系用户，包含arch，manjaro等发行版，你可以选择使用yay进行安装
+
+#### 使用yay安装
+
+1. 项目已经打包到AUR，使用yay命令即可完成安装
+
+   `yay -S fast-translate`
 
 ## Usage
 
@@ -38,42 +72,6 @@ gitee: [fast-trasnlate](https://gitee.com/kalew515/fast-translate)
 |  即时翻译  |   选中即时翻译，选中一段后即可自动进行翻译，省去复制的操作   | ![即时翻译.gif](https://s2.loli.net/2022/06/16/xqBjub7hJGMTXWd.gif) |
 |  追加翻译  |                         选中追加翻译                         | ![追加翻译.gif](https://s2.loli.net/2022/06/16/4xR9MBTstH2FidS.gif) |
 | 自定义翻译 |             点击翻译按钮，可以翻译原文框中的原文             | ![自定义翻译.gif](https://s2.loli.net/2022/06/16/RtWxJw1faU4mnFV.gif) |
-
-
-
-## Installtion
-
-### 手动编译安装
-
-1. 下载源码到本地
-
-   `git clone https://github.com/KaleW515/fast-translate.git`
-
-2. 进入代码目录
-
-   `cd fast-translate`
-
-3. 确保安装了cmake，如果安装了这一步可以跳过，如果没有安装则需要进行安装
-
-   `sudo pacman -S --noconfirm cmake`
-
-4. 编译安装
-
-   ```cmake
-   make check-dependency
-   make build
-   make install
-   ```
-
-### Arch Linux
-
-如果你是arch系用户，包含arch，manjaro等发行版，你可以选择使用yay进行安装
-
-#### 使用yay安装
-
-1. 项目已经打包到AUR，使用yay命令即可完成安装
-
-   `yay -S fast-translate`
 
 ## 最后
 
