@@ -13,7 +13,7 @@ clear:
 	rm -rf ./cache
 	rm -rf *.spec
 
-build: clear
+build: clear check-dependency
 	mkdir -p build/fast-translate/usr/bin
 	mkdir -p build/fast-translate/usr/share/applications
 	mkdir -p build/fast-translate/usr/share/icons
