@@ -1,5 +1,8 @@
-import sys
 import logging
+import sys
+
+from core.constants.file_constants import FileConstants
+
 
 def get_log_config():
     dev = False
@@ -10,6 +13,5 @@ def get_log_config():
     filename = None
     if dev:
         level = logging.WARN
-        # filename = "../log/ft.log"
-        filename = None
+        filename = FileConstants.LOG_FILE_PATH
     return level, filename
