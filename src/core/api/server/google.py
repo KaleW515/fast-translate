@@ -1,6 +1,6 @@
 import asyncio
 import random
-from typing import List, Union, Dict
+from typing import List, Union
 
 import httpx
 
@@ -10,7 +10,8 @@ from core.config.secrets.google_secrets import GoogleSecrets
 
 class TranslateResponse:
 
-    def __init__(self, translated_text: str, detected_source_language: str = None, model: str = None):
+    def __init__(self, translated_text: str, detected_source_language: str = None,
+                 model: str = None):
         if isinstance(translated_text, list):
             self.translated_text = translated_text[0]
             self.detected_source_language = translated_text[1]
@@ -20,8 +21,10 @@ class TranslateResponse:
         self.model = model
 
     def __repr__(self):
-        return self.__class__.__qualname__ + f'(translatedText={repr(self.translated_text)}, detectedSourceLanguage=' \
-                                             f'{repr(self.detected_source_language)}, model={repr(self.model)})'
+        return self.__class__.__qualname__ + f'(translatedText={repr(self.translated_text)}, ' \
+                                             f'detectedSourceLanguage=' \
+                                             f'{repr(self.detected_source_language)}, ' \
+                                             f'model={repr(self.model)})'
 
 
 class GoogleTranslator(AbstractTranslator):
@@ -40,8 +43,10 @@ class GoogleTranslator(AbstractTranslator):
 
         if user_agent is None:
             self.user_agent = (
-                f'GoogleTranslate/6.{random.randint(10, 100)}.0.06.{random.randint(111111111, 999999999)}'
-                ' (Linux; U; Android {random.randint(5, 11)}; {base64.b64encode(str(random.random())['
+                f'GoogleTranslate/6.{random.randint(10, 100)}.0.06.'
+                f'{random.randint(111111111, 999999999)}'
+                ' (Linux; U; Android {random.randint(5, 11)}; {base64.b64encode(str('
+                'random.random())['
                 '2:].encode()).decode()}) '
             )
         self.BASE_URL: str = 'https://translate.google.' + domain
@@ -64,7 +69,8 @@ class GoogleTranslator(AbstractTranslator):
                 return "没有复制任何内容", True
 
         for i in range(1, 2):
-            response = await self.__do_translate0(q=q, target=target, source=source, fmt=fmt, v='1.0')
+            response = await self.__do_translate0(q=q, target=target, source=source, fmt=fmt,
+                                                  v='1.0')
             if response is None:
                 return "网络异常，请检查代理", False
             if response.status_code == 429:
@@ -80,7 +86,8 @@ class GoogleTranslator(AbstractTranslator):
         return response.text, False
 
     async def __do_translate0(
-            self, q: Union[str, List[str]], target: str = None, source: str = None, fmt: str = None, v: str = None
+            self, q: Union[str, List[str]], target: str = None, source: str = None, fmt: str = None,
+            v: str = None
     ):
         if target is None:
             target = self.target
@@ -94,9 +101,19 @@ class GoogleTranslator(AbstractTranslator):
                     async with httpx.AsyncClient(trust_env=False, timeout=2) as httpxClient:
                         response = await httpxClient.post(
                             self.TRANSLATE_URL,
-                            params={'tl': target, 'sl': source, 'ie': 'UTF-8', 'oe': 'UTF-8', 'client': 'at', 'dj': '1',
-                                    'format': fmt, 'v': v},
-                            data={'q': q}
+                            params={
+                                'tl': target,
+                                'sl': source,
+                                'ie': 'UTF-8',
+                                'oe': 'UTF-8',
+                                'client': 'at',
+                                'dj': '1',
+                                'format': fmt,
+                                'v': v
+                                },
+                            data={
+                                'q': q
+                                }
                         )
                         if response.status_code == 429:
                             continue
@@ -108,9 +125,19 @@ class GoogleTranslator(AbstractTranslator):
                     async with httpx.AsyncClient(proxies=self.proxies, timeout=2) as httpxClient:
                         response = await httpxClient.post(
                             self.TRANSLATE_URL,
-                            params={'tl': target, 'sl': source, 'ie': 'UTF-8', 'oe': 'UTF-8', 'client': 'at', 'dj': '1',
-                                    'format': fmt, 'v': v},
-                            data={'q': q}
+                            params={
+                                'tl': target,
+                                'sl': source,
+                                'ie': 'UTF-8',
+                                'oe': 'UTF-8',
+                                'client': 'at',
+                                'dj': '1',
+                                'format': fmt,
+                                'v': v
+                                },
+                            data={
+                                'q': q
+                                }
                         )
                         if response.status_code == 429:
                             continue
@@ -122,8 +149,7 @@ class GoogleTranslator(AbstractTranslator):
 
 
 if __name__ == '__main__':
-    client = GoogleTranslator(proxies={'https://': 'http://localhost:7890'})
-    # client = GoogleTranslator()
+    client = GoogleTranslator()
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(client.translate('hello', target='zh'))
     loop.run_until_complete(future)

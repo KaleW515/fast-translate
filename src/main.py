@@ -4,6 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSystemTrayIcon, QAction, QMenu
 
 import container
+from core.constants.file_constants import FileConstants
 
 
 class SystemTray:
@@ -16,7 +17,7 @@ class SystemTray:
         self.run()
 
     def init_icon(self):
-        self.tp.setIcon(QIcon('data/icon/logo.svg.png'))
+        self.tp.setIcon(QIcon(FileConstants.LOGO_FILE_PATH))
 
     def act(self, reason):
         if reason == 2 or reason == 3:

@@ -1,6 +1,8 @@
-import ui.Ui_about as Ui_about
-from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
+
+import ui.Ui_about as Ui_about
+from core.constants.notification import Notification
 from core.utils import version
 
 
@@ -10,11 +12,12 @@ class UiAbout(QMainWindow, Ui_about.Ui_About):
         self.setupUi(self)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.versionLabel.setText("v" + version.VERSION)
-        self.checkUpdateButton.clicked.connect(self.on_check_update_clicked)
+        self.checkUpdateButton.clicked.connect(self.__on_check_update_clicked)
 
-    def on_check_update_clicked(self):
+    def __on_check_update_clicked(self):
         if not version.check_update():
-            QMessageBox.information(self, "提示", "已经是最新版本")
+            QMessageBox.information(self, Notification.SUCCESS_HEAD,
+                                    Notification.HAVE_NO_NEW_VERSION_BODY)
         else:
-            QMessageBox.information(self, "提示", "有新版本，请通过yay更新")
-
+            QMessageBox.information(self, Notification.FAIL_HEAD,
+                                    Notification.HAVE_NEW_VERSION_BODY)

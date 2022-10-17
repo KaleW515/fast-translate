@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/kale/PycharmProjects/ftranslate/ui/preference.ui'
+# Form implementation generated from reading ui file
+# '/home/kale/PycharmProjects/ftranslate/ui/preference.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -16,7 +17,8 @@ class Ui_Preference(object):
         Preference.setObjectName("Preference")
         Preference.setEnabled(True)
         Preference.resize(500, 350)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Preference.sizePolicy().hasHeightForWidth())
@@ -24,10 +26,12 @@ class Ui_Preference(object):
         Preference.setMaximumSize(QtCore.QSize(800, 350))
         Preference.setSizeIncrement(QtCore.QSize(0, 0))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./data/icon/settings.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./data/icon/settings.svg"), QtGui.QIcon.Normal,
+                       QtGui.QIcon.Off)
         Preference.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(Preference)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
@@ -59,7 +63,8 @@ class Ui_Preference(object):
         self.gridLayout.addWidget(self.googleSaveButton, 7, 0, 1, 1)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem)
         self.googleLink = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
@@ -74,7 +79,8 @@ class Ui_Preference(object):
         self.gridLayout.addWidget(self.baiduSaveButton, 3, 0, 1, 1)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem1)
         self.baiduLink = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()

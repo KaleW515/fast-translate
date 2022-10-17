@@ -9,8 +9,8 @@ import container
 import ui.Ui_translate as Ui_translate
 from core.api import translator
 from core.api.instant_translate import InstantTranslate
-from core.config.translator_enums import TranslatorEnums
-from ..utils import log
+from core.constants.translator_enums import TranslatorEnums
+from core.utils import log
 
 cache = {
     "original": "",
@@ -19,7 +19,7 @@ cache = {
     "target": []
 }
 
-now = {
+curr = {
     "original": "",
     "result": "",
     "server": set(),
@@ -38,7 +38,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.setupUi(self)
         # 默认打开谷歌翻译国内源
         self.googleCNBox.setCheckState(Qt.Checked)
-        self.translateButton.clicked.connect(self.on_translate_button_click)
+        self.translateButton.clicked.connect(self.__on_translate_button_click)
 
         # 设置为未选中状态
         self.baiduBox.setCheckState(Qt.Unchecked)
@@ -48,12 +48,12 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.googleText.setVisible(False)
         self.googleLable.setVisible(False)
 
-        self.baiduBox.clicked.connect(self.on_baidubox_click)
-        self.googleBox.clicked.connect(self.on_googlebox_click)
-        self.googleCNBox.clicked.connect(self.on_googlecnbox_click)
-        self.translateNowBox.clicked.connect(self.on_translatenowbox_click)
+        self.baiduBox.clicked.connect(self.__on_baidubox_click)
+        self.googleBox.clicked.connect(self.__on_googlebox_click)
+        self.googleCNBox.clicked.connect(self.__on_googlecnbox_click)
+        self.translateNowBox.clicked.connect(self.__on_translatenowbox_click)
 
-        self.fill_targetbox()
+        self.__fill_targetbox()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # 设置线程相关
@@ -61,47 +61,55 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         self.thread = QThread(self)
         self.translate_thread.moveToThread(self.thread)
         self.start_translate_thread.connect(self.translate_thread.run)
-        self.translate_thread.baidu_signal.connect(self.baidu_res_set)
-        self.translate_thread.google_signal.connect(self.google_res_set)
-        self.translate_thread.googlecn_signal.connect(self.googlecn_res_set)
+        self.translate_thread.baidu_signal.connect(self.__baidu_res_set)
+        self.translate_thread.google_signal.connect(self.__google_res_set)
+        self.translate_thread.googlecn_signal.connect(self.__googlecn_res_set)
 
         # 设置即时翻译
         self.it = None
         self.it_process = None
 
         # 菜单栏点击事件
-        self.translateSetting.triggered.connect(self.on_translate_setting)
-        self.aboutSetting.triggered.connect(self.on_about_setting)
+        self.translateSetting.triggered.connect(self.__on_translate_setting)
+        self.aboutSetting.triggered.connect(self.__on_about_setting)
+        self.copykeySetting.triggered.connect(self.__on_copykey_setting)
 
         # 下面会用到的变量
         self.clipboard = container.get_container().clipboard
         self.ui_preference = container.get_container().ui_preference
         self.ui_about = container.get_container().ui_about
+        self.ui_copykey = container.get_container().ui_copykey
 
     # 窗口关闭事件
     def closeEvent(self, event):
         event.ignore()
         self.hide()
 
-    def on_translate_setting(self):
+    def __on_translate_setting(self):
         self.ui_preference.show()
+        self.ui_preference.do_fill_secrets()
 
-    def on_about_setting(self):
+    def __on_about_setting(self):
         self.ui_about.show()
 
-    def baidu_res_set(self, res):
+    def __on_copykey_setting(self):
+        self.ui_copykey.show()
+        self.ui_copykey.run_listener()
+        self.ui_copykey.do_fill_text()
+
+    def __baidu_res_set(self, res):
         if self.additionalBox.isChecked():
             self.baiduText.setPlainText(self.baiduText.toPlainText() + res)
         else:
             self.baiduText.setPlainText(res)
 
-    def google_res_set(self, res):
+    def __google_res_set(self, res):
         if self.additionalBox.isChecked():
             self.googleText.setPlainText(self.googleText.toPlainText() + res)
         else:
             self.googleText.setPlainText(res)
 
-    def googlecn_res_set(self, res):
+    def __googlecn_res_set(self, res):
         if self.additionalBox.isChecked():
             self.googleCNText.setPlainText(self.googleCNText.toPlainText() + res)
         else:
@@ -133,33 +141,33 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
                 self.it_process.join()
             logging.debug("it_process is stopped")
 
-    def on_baidubox_click(self):
+    def __on_baidubox_click(self):
         self.baiduLabel.setVisible(self.baiduBox.isChecked())
         self.baiduText.setVisible(self.baiduBox.isChecked())
 
-    def on_googlebox_click(self):
+    def __on_googlebox_click(self):
         self.googleLable.setVisible(self.googleBox.isChecked())
         self.googleText.setVisible(self.googleBox.isChecked())
 
-    def on_googlecnbox_click(self):
+    def __on_googlecnbox_click(self):
         self.googleCNLable.setVisible(self.googleCNBox.isChecked())
         self.googleCNText.setVisible(self.googleCNBox.isChecked())
 
-    def on_translate_button_click(self):
-        self.clipboard.setText(self.originalText.toPlainText())
+    def __on_translate_button_click(self):
+        self.clipboard.setText(self.originalText.toPlainText().strip())
 
-    def on_translatenowbox_click(self):
+    def __on_translatenowbox_click(self):
         if self.translateNowBox.isChecked():
-            self.do_release_it_process()
+            self.__do_release_it_process()
             self.it = InstantTranslate()
             self.it.release_key()
             self.it_process = Process(target=self.it.run)
             self.it_process.start()
             logging.debug("translate now box is checked")
         else:
-            self.do_release_it_process()
+            self.__do_release_it_process()
 
-    def do_release_it_process(self):
+    def __do_release_it_process(self):
         # 停止it_process进程
         if self.it is not None:
             self.it.release_key()
@@ -171,7 +179,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
             self.it_process = None
             logging.debug("translate now process is stopped")
 
-    def fill_targetbox(self):
+    def __fill_targetbox(self):
         targets = container.get_container().config.target_list
         self.targetBox.addItems(targets)
 
@@ -209,7 +217,7 @@ class TranslateThread(QObject):
         self.cfg = container.get_container().config
         self.trans_object = translator.Translator()
 
-    async def do_translate(self, original, server, text_to):
+    async def __do_translate(self, original, server, text_to):
         res, success = await self.trans_object.translate(original, server, text_to)
         logging.info("server: {}, res: {}".format(server, res))
         if server == TranslatorEnums.BAIDU:
@@ -225,7 +233,7 @@ class TranslateThread(QObject):
             task.cancel()
         self.loop.stop()
 
-    def do_clean_tasks(self):
+    def __do_clean_tasks(self):
         tasks = []
         for task in self.tasks:
             if not task.done():
@@ -236,29 +244,29 @@ class TranslateThread(QObject):
         main_window = container.get_container().main_window
         server = set()
         # 清理过期任务
-        self.do_clean_tasks()
+        self.__do_clean_tasks()
         if main_window.baiduBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], TranslatorEnums.BAIDU,
-                                      self.cfg.baidu_target[now["target"]])))
+                    self.__do_translate(curr["original"], TranslatorEnums.BAIDU,
+                                        self.cfg.baidu_target[curr["target"]])))
             server.add(TranslatorEnums.BAIDU)
         if main_window.googleBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], TranslatorEnums.GOOGLE,
-                                      self.cfg.google_target[now["target"]])))
+                    self.__do_translate(curr["original"], TranslatorEnums.GOOGLE,
+                                        self.cfg.google_target[curr["target"]])))
             server.add(TranslatorEnums.GOOGLE)
         if main_window.googleCNBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
-                    self.do_translate(now["original"], TranslatorEnums.GOOGLECN,
-                                      self.cfg.googlecn_target[now["target"]])))
+                    self.__do_translate(curr["original"], TranslatorEnums.GOOGLECN,
+                                        self.cfg.googlecn_target[curr["target"]])))
             server.add(TranslatorEnums.GOOGLECN)
         self.loop.run_until_complete(asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION))
-        cache["server"] = now["server"]
-        cache["original"] = now["original"]
-        cache["target"] = now["target"]
+        cache["server"] = curr["server"]
+        cache["original"] = curr["original"]
+        cache["target"] = curr["target"]
 
 
 def clipboard_change():
@@ -279,9 +287,7 @@ def submit_translate(data):
         else:
             original = data.text()
             main_window.set_original_text(" " + original)
-            # if main_window.isHidden():
-            #     main_window.show()
-            now["original"] = original
-            now["target"] = target
-            now["server"] = server
+            curr["original"] = original
+            curr["target"] = target
+            curr["server"] = server
             main_window.start_translate_thread.emit()

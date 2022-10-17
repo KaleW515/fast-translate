@@ -13,7 +13,8 @@ class BaiduTranslator(AbstractTranslator):
     def __init__(self, secrets: BaiduSecrets):
         import container
         self.config = container.get_container().config
-        self.url = "https://fanyi-api.baidu.com/api/trans/vip/translate?q={}&from={}&to={}&appid={}&salt={}&sign={}"
+        self.url = "https://fanyi-api.baidu.com/api/trans/vip/translate?q={}&from={}&to={" \
+                   "}&appid={}&salt={}&sign={}"
         self.headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/102.0.5005.61 Safari/537.36"

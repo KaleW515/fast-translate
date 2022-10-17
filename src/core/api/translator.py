@@ -1,6 +1,6 @@
 from core.api.server import baidu
 from core.api.server import google, google_cn
-from core.config.translator_enums import TranslatorEnums
+from core.constants.translator_enums import TranslatorEnums
 
 
 class Translator:

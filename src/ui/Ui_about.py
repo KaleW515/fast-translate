@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/kale/github/fast-translate/src/ui/about.ui'
+# Form implementation generated from reading ui file
+# '/home/kale/github/fast-translate/src/ui/about.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -15,7 +16,8 @@ class Ui_About(object):
     def setupUi(self, About):
         About.setObjectName("About")
         About.resize(450, 400)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(About.sizePolicy().hasHeightForWidth())
@@ -56,7 +58,8 @@ class Ui_About(object):
         self.verticalLayout.addWidget(self.versionLabel)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.checkUpdateButton = QtWidgets.QPushButton(self.centralwidget)
         font = QtGui.QFont()
@@ -64,7 +67,8 @@ class Ui_About(object):
         self.checkUpdateButton.setFont(font)
         self.checkUpdateButton.setObjectName("checkUpdateButton")
         self.horizontalLayout.addWidget(self.checkUpdateButton)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout)
         About.setCentralWidget(self.centralwidget)
@@ -83,6 +87,7 @@ class Ui_About(object):
         _translate = QtCore.QCoreApplication.translate
         About.setWindowTitle(_translate("About", "关于"))
         self.titleLabel.setText(_translate("About", "Fast-Translate"))
-        self.aboutLabel.setText(_translate("About", "    一款适用于Linux系统的翻译软件，支持选中即翻译，多语种翻译等功能，方便文献阅读等"))
+        self.aboutLabel.setText(_translate("About",
+                                           "    一款适用于Linux系统的翻译软件，支持选中即翻译，多语种翻译等功能，方便文献阅读等"))
         self.versionLabel.setText(_translate("About", "版本"))
         self.checkUpdateButton.setText(_translate("About", "检查更新"))

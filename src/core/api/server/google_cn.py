@@ -10,7 +10,8 @@ class GoogleCNTranslator(AbstractTranslator):
     def __init__(self):
         self.cli = "gtx"
         self.dt = "t"
-        self.url = "https://translate.googleapis.com/translate_a/single?client={}&dt={}&sl={}&tl={}&q={}"
+        self.url = "https://translate.googleapis.com/translate_a/single?client={}&dt={}&sl={" \
+                   "}&tl={}&q={}"
         self.headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/102.0.5005.61 Safari/537.36"

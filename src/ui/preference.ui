@@ -36,7 +36,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../config/icon/settings.svg</normaloff>../config/icon/settings.svg</iconset>
+    <normaloff>./data/icon/settings.svg</normaloff>./data/icon/settings.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">

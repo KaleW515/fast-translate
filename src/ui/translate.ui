@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../config/icon/logo.svg.png</normaloff>../config/icon/logo.svg.png</iconset>
+    <normaloff>./data/icon/logo.svg.png</normaloff>./data/icon/logo.svg.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -191,6 +191,7 @@
      <string>设置</string>
     </property>
     <addaction name="translateSetting"/>
+    <addaction name="copykeySetting"/>
     <addaction name="aboutSetting"/>
    </widget>
    <addaction name="menu"/>
@@ -198,6 +199,11 @@
   <action name="translateSetting">
    <property name="text">
     <string>翻译设置</string>
+   </property>
+  </action>
+  <action name="copykeySetting">
+   <property name="text">
+    <string>快捷键设置</string>
    </property>
   </action>
   <action name="aboutSetting">

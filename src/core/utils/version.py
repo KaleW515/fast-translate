@@ -2,10 +2,12 @@ import json
 
 import requests
 
+from core.constants.links import Links
+
 VERSION = "1.1.0"
 
 
 def check_update():
-    url = "https://gitee.com/api/v5/repos/kalew515/fast-translate/releases/latest"
+    url = Links.CHECK_UPDATE_URL
     res = json.loads(requests.get(url=url).text)
     return res["tag_name"] != VERSION

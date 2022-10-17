@@ -1,5 +1,6 @@
 PREFIX=/opt
 APP_PATH=/opt
+APP_NAME=fast-translate
 
 
 check-dependency:
@@ -14,26 +15,26 @@ clear:
 	rm -rf *.spec
 
 build: clear check-dependency
-	mkdir -p build/fast-translate/usr/bin
-	mkdir -p build/fast-translate/usr/share/applications
-	mkdir -p build/fast-translate/usr/share/icons
-	mkdir -p build/fast-translate$(APP_PATH)/fast-translate
+	mkdir -p build/$(APP_NAME)/usr/bin
+	mkdir -p build/$(APP_NAME)/usr/share/applications
+	mkdir -p build/$(APP_NAME)/usr/share/icons
+	
+	mkdir -p build/$(APP_NAME)$(APP_PATH)/$(APP_NAME)
 
-	cp pkg/aur/ftranslate build/fast-translate/usr/bin/
+	cp pkg/aur/ftranslate build/$(APP_NAME)/usr/bin/
+	cp src/data/icon/logo.svg.png build/$(APP_NAME)/usr/share/icons/fast-translate.png
+	cp pkg/aur/fast-translate.desktop build/$(APP_NAME)/usr/share/applications/
 
-	cp src/data/icon/logo.svg.png build/fast-translate/usr/share/icons/fast-translate.png
-	cp pkg/aur/fast-translate.desktop build/fast-translate/usr/share/applications/
-
-	cp -r src/* build/fast-translate$(APP_PATH)/fast-translate/
+	cp -r src/* build/$(APP_NAME)$(APP_PATH)/$(APP_NAME)/
 
 uninstall:
-	sudo rm -rf $(PREFIX)/fast-translate
+	sudo rm -rf $(PREFIX)/$(APP_NAME)
 	sudo rm -rf /usr/bin/ftranslate /usr/share/icons/fast-translate.png /usr/share/applications/fast-translate.desktop
 
 install: uninstall
 	sudo mkdir -p /usr/bin/
 	sudo mkdir -p /usr/share/icons/
-	sudo cp -r ./build/fast-translate$(PREFIX)/fast-translate $(PREFIX)/
-	sudo cp build/fast-translate/usr/bin/* /usr/bin/
-	sudo cp build/fast-translate/usr/share/icons/* /usr/share/icons/
-	sudo cp build/fast-translate/usr/share/applications/* /usr/share/applications/
+	sudo cp -r ./build/$(APP_NAME)$(PREFIX)/$(APP_NAME) $(PREFIX)/
+	sudo cp build/$(APP_NAME)/usr/bin/* /usr/bin/
+	sudo cp build/$(APP_NAME)/usr/share/icons/* /usr/share/icons/
+	sudo cp build/$(APP_NAME)/usr/share/applications/* /usr/share/applications/

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/kale/github/fast-translate/src/ui/translate.ui'
+# Form implementation generated from reading ui file
+# '/home/kale/github/fast-translate/src/ui/translate.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -16,14 +17,16 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(633, 767)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./data/icon/logo.svg.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./data/icon/logo.svg.png"), QtGui.QIcon.Normal,
+                       QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.originalText = QtWidgets.QTextEdit(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.originalText.sizePolicy().hasHeightForWidth())
@@ -38,12 +41,14 @@ class Ui_MainWindow(object):
         self.targetBox = QtWidgets.QComboBox(self.centralwidget)
         self.targetBox.setObjectName("targetBox")
         self.horizontalLayout_2.addWidget(self.targetBox)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                           QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.translateButton = QtWidgets.QPushButton(self.centralwidget)
         self.translateButton.setObjectName("translateButton")
         self.horizontalLayout_2.addWidget(self.translateButton)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
         self.translateNowBox = QtWidgets.QCheckBox(self.centralwidget)
         self.translateNowBox.setObjectName("translateNowBox")
@@ -57,12 +62,14 @@ class Ui_MainWindow(object):
         self.baiduBox = QtWidgets.QCheckBox(self.centralwidget)
         self.baiduBox.setObjectName("baiduBox")
         self.horizontalLayout_3.addWidget(self.baiduBox)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem2)
         self.googleBox = QtWidgets.QCheckBox(self.centralwidget)
         self.googleBox.setObjectName("googleBox")
         self.horizontalLayout_3.addWidget(self.googleBox)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem3)
         self.googleCNBox = QtWidgets.QCheckBox(self.centralwidget)
         self.googleCNBox.setObjectName("googleCNBox")
@@ -99,9 +106,12 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
         self.translateSetting = QtWidgets.QAction(MainWindow)
         self.translateSetting.setObjectName("translateSetting")
+        self.copykeySetting = QtWidgets.QAction(MainWindow)
+        self.copykeySetting.setObjectName("copykeySetting")
         self.aboutSetting = QtWidgets.QAction(MainWindow)
         self.aboutSetting.setObjectName("aboutSetting")
         self.menu.addAction(self.translateSetting)
+        self.menu.addAction(self.copykeySetting)
         self.menu.addAction(self.aboutSetting)
         self.menubar.addAction(self.menu.menuAction())
 
@@ -122,4 +132,5 @@ class Ui_MainWindow(object):
         self.googleCNLable.setText(_translate("MainWindow", "谷歌翻译[CN源]"))
         self.menu.setTitle(_translate("MainWindow", "设置"))
         self.translateSetting.setText(_translate("MainWindow", "翻译设置"))
+        self.copykeySetting.setText(_translate("MainWindow", "快捷键设置"))
         self.aboutSetting.setText(_translate("MainWindow", "关于"))
