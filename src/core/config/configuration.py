@@ -3,8 +3,10 @@ import logging
 import os
 import shutil
 
-from core.config.constants import Constants
 from core.config.secrets import baidu_secrets, google_secrets
+from core.constants.copykey_map import CopykeyMap, CopykeyEnums
+from core.constants.file_constants import FileConstants
+from core.constants.target_constants import Constants
 from core.utils import log
 
 logging.basicConfig(level=log.get_log_config()[0], filename=log.get_log_config()[1],
@@ -14,13 +16,6 @@ logging.basicConfig(level=log.get_log_config()[0], filename=log.get_log_config()
 class Configuration:
 
     def __init__(self):
-        self.home_path = os.getenv("HOME")
-        # config 文件路径
-        self.config_dir_path = self.home_path + "/.config/fast-translate"
-        # config 模板文件路径
-        self.config_template_file_path = "../../data/config_template.json"
-        # config 文件全路径
-        self.config_file_path = self.config_dir_path + "/config.json"
         self.baidu_secret_name = "baiduSecret"
         self.google_secret_name = "googleSecret"
         self.target_list = None
@@ -31,11 +26,12 @@ class Configuration:
         self.baidu_secrets = None
         self.google_secrets = None
 
-        self.check_config()
-        self.constant_init()
-        self.secret_init()
+        self.__check_config()
+        self.__check_log()
+        self.__constant_init()
+        self.__secret_init()
 
-    def constant_init(self):
+    def __constant_init(self):
         self.target_list = Constants.TARGET_LIST
         self.baidu_target = Constants.BAIDU_TARGET
         self.google_target = Constants.GOOGLE_TARGET
@@ -43,9 +39,9 @@ class Configuration:
         logging.info("init constant success ~")
         return
 
-    def secret_init(self):
+    def __secret_init(self):
         try:
-            with open(self.config_file_path, "r") as f:
+            with open(FileConstants.CONFIG_FILE_PATH, "r") as f:
                 cfg = json.load(f)
                 self.__do_baidu_secret_init(cfg)
 
@@ -67,31 +63,32 @@ class Configuration:
         if cfg[self.google_secret_name]["proxies"] != "":
             self.google_secrets.proxies = cfg[self.google_secret_name]["proxies"]
 
-    def check_config(self):
-        os.makedirs(self.config_dir_path, exist_ok=True)
-        if not os.path.exists(self.config_file_path):
+    def __check_config(self):
+        os.makedirs(FileConstants.CONFIG_DIR_PATH, exist_ok=True)
+        if not os.path.exists(FileConstants.CONFIG_FILE_PATH):
             # 将config_template.json复制到config.json
-            shutil.copy(self.config_template_file_path, self.config_file_path)
+            shutil.copy(FileConstants.CONFIG_TEMPLATE_FILE_PATH, FileConstants.CONFIG_FILE_PATH)
         logging.info("check config finish ~")
 
     @staticmethod
     def refresh_config(func):
         def wrap(self, *args, **kwargs):
-            func(self, *args, **kwargs)
-            self.check_config()
-            self.constant_init()
-            self.secret_init()
+            result = func(self, *args, **kwargs)
+            self.__check_config()
+            self.__constant_init()
+            self.__secret_init()
+            return result
 
         return wrap
 
     @refresh_config
     def change_baidu_secret(self, appid: str, appkey: str):
         try:
-            with open(self.config_file_path, "r") as f:
+            with open(FileConstants.CONFIG_FILE_PATH, "r") as f:
                 cfg = json.load(f)
             cfg[self.baidu_secret_name]["appid"] = appid
             cfg[self.baidu_secret_name]["appkey"] = appkey
-            with open(self.config_file_path, "w") as f:
+            with open(FileConstants.CONFIG_FILE_PATH, "w") as f:
                 json.dump(cfg, f)
         except Exception as e:
             logging.error(e.__str__())
@@ -101,19 +98,52 @@ class Configuration:
     @refresh_config
     def change_google_proxy(self, protocol: str, proxy: str):
         try:
-            with open(self.config_file_path, "r") as f:
+            with open(FileConstants.CONFIG_FILE_PATH, "r") as f:
                 cfg = json.load(f)
             cfg[self.google_secret_name]["proxies"][protocol] = proxy
-            with open(self.config_file_path, "w") as f:
+            with open(FileConstants.CONFIG_FILE_PATH, "w") as f:
                 json.dump(cfg, f)
         except Exception as e:
             logging.error(e.__str__())
             return False
         return True
 
+    def get_google_secret(self) -> google_secrets.GoogleSecrets:
+        return self.google_secrets
+
+    def get_baidu_secret(self) -> baidu_secrets.BaiduSecrets:
+        return self.baidu_secrets
+
+    def get_copykey(self) -> list:
+        copykey = []
+        try:
+            with open(FileConstants.COPYKEY_FILE_PATH, "r") as f:
+                while f.readable():
+                    key = f.readline().replace("\n", "")
+                    if key == "":
+                        break
+                    copykey.append(CopykeyMap.copykey_map[key])
+        except FileNotFoundError as e:
+            copykey.append(CopykeyMap.copykey_map[CopykeyEnums.CTRL.value])
+            copykey.append(CopykeyMap.copykey_map[CopykeyEnums.C.value])
+        return copykey
+
+    def save_copykey(self, copykey: list) -> bool:
+        try:
+            with open(FileConstants.COPYKEY_FILE_PATH, "w") as f:
+                for i in range(len(copykey)):
+                    f.write(str(copykey[i]) + "\n")
+            return True
+        except:
+            return False
+
+    def __check_log(self):
+        os.makedirs(FileConstants.LOG_DIR_PATH, exist_ok=True)
+        logging.info("check log path finish ~")
+
 
 if __name__ == '__main__':
     config = Configuration()
-    print(config.google_secret.proxies)
+    print(config.google_secrets.proxies)
     config.change_google_proxy("https://", "http://127.0.0.1:7890")
-    print(config.google_secret.proxies)
+    print(config.google_secrets.proxies)
