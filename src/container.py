@@ -1,4 +1,3 @@
-import logging
 import sys
 
 from PyQt5.QtWidgets import QApplication
@@ -16,15 +15,18 @@ class Container:
         self.main_window = None
         self.ui_preference = None
         self.ui_about = None
+        self.ui_copykey = None
 
     def invoke_init(self):
         from core.logic.logic_translate import UiTranslate
         from core.logic.logic_about import UiAbout
+        from core.logic.logic_copykey import UiCopykey
         self.app = QApplication(sys.argv)
         self.clipboard = self.app.clipboard()
         self.config = configuration.Configuration()
         self.ui_preference = UiPreference()
         self.ui_about = UiAbout()
+        self.ui_copykey = UiCopykey()
         self.main_window = UiTranslate()
 
         self.after_init()
@@ -32,19 +34,6 @@ class Container:
     def after_init(self):
         from core.logic.logic_translate import clipboard_change
         self.clipboard.dataChanged.connect(clipboard_change)
-
-    def do_logger_init(self):
-        dev = False
-        if len(sys.argv) > 1:
-            if sys.argv[1] == "dev":
-                dev = True
-        level = logging.DEBUG
-        filename = None
-        if dev:
-            level = logging.WARN
-            filename = "../log/ft.log"
-        logging.basicConfig(level=level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                            filename=filename)
 
 
 container = None
