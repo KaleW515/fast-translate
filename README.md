@@ -12,7 +12,8 @@ gitee: [fast-trasnlate](https://gitee.com/kalew515/fast-translate)
 - [x] 支持划词即时翻译
 - [x] 支持多语种翻译
 - [x] 支持追加翻译
-- **谷歌翻译国内源无法使用的解决方案**：https://zhuanlan.zhihu.com/p/569452790
+- ~~**谷歌翻译国内源无法使用的解决方案**：https://zhuanlan.zhihu.com/p/569452790~~
+- sadly, 谷歌翻译国内源彻底失效，现在还是推荐百度翻译或者配置代理使用谷歌翻译
 
 ## Installtion
 

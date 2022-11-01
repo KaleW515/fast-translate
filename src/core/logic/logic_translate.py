@@ -37,13 +37,13 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
         super(UiTranslate, self).__init__(parent)
         self.setupUi(self)
         # 默认打开谷歌翻译国内源
-        self.googleCNBox.setCheckState(Qt.Checked)
+        self.baiduBox.setCheckState(Qt.Checked)
         self.translateButton.clicked.connect(self.__on_translate_button_click)
 
         # 设置为未选中状态
-        self.baiduBox.setCheckState(Qt.Unchecked)
-        self.baiduText.setVisible(False)
-        self.baiduLabel.setVisible(False)
+        self.googleCNBox.setCheckState(Qt.Unchecked)
+        self.googleCNText.setVisible(False)
+        self.googleCNLable.setVisible(False)
         self.googleBox.setCheckState(Qt.Unchecked)
         self.googleText.setVisible(False)
         self.googleLable.setVisible(False)
