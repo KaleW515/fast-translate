@@ -6,5 +6,10 @@
   "googleSecret": {
     "proxies": {
     }
+  },
+  "redisSecret": {
+    "host": "",
+    "port": "",
+    "password": ""
   }
 }

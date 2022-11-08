@@ -7,9 +7,9 @@ from PyQt5.QtWidgets import QMainWindow
 
 import container
 import ui.Ui_translate as Ui_translate
-from core.api import translator
-from core.api.instant_translate import InstantTranslate
 from core.constants.translator_enums import TranslatorEnums
+from core.translate import translator
+from core.translate.instant_translate import InstantTranslate
 from core.utils import log
 
 cache = {
@@ -31,13 +31,14 @@ logging.basicConfig(level=log.get_log_config()[0], filename=log.get_log_config()
 
 
 class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
-    start_translate_thread = pyqtSignal(name="start_translate_thread")
+    start_translate_thread = pyqtSignal(bool, name="start_translate_thread")
 
     def __init__(self, parent=None):
         super(UiTranslate, self).__init__(parent)
         self.setupUi(self)
-        # 默认打开谷歌翻译国内源
+        # 默认打开百度翻译国内源
         self.baiduBox.setCheckState(Qt.Checked)
+        # 翻译按钮点击事件
         self.translateButton.clicked.connect(self.__on_translate_button_click)
 
         # 设置为未选中状态
@@ -155,6 +156,7 @@ class UiTranslate(QMainWindow, Ui_translate.Ui_MainWindow):
 
     def __on_translate_button_click(self):
         self.clipboard.setText(self.originalText.toPlainText().strip())
+        self.start_translate_thread.emit(False)
 
     def __on_translatenowbox_click(self):
         if self.translateNowBox.isChecked():
@@ -217,8 +219,8 @@ class TranslateThread(QObject):
         self.cfg = container.get_container().config
         self.trans_object = translator.Translator()
 
-    async def __do_translate(self, original, server, text_to):
-        res, success = await self.trans_object.translate(original, server, text_to)
+    async def __do_translate(self, original, server, text_to, use_cache: bool):
+        res, success = await self.trans_object.translate(original, server, text_to, use_cache)
         logging.info("server: {}, res: {}".format(server, res))
         if server == TranslatorEnums.BAIDU:
             self.baidu_signal.emit(res)
@@ -240,7 +242,7 @@ class TranslateThread(QObject):
                 tasks.append(task)
         self.tasks = tasks
 
-    def run(self):
+    def run(self, use_cache: bool):
         main_window = container.get_container().main_window
         server = set()
         # 清理过期任务
@@ -249,19 +251,19 @@ class TranslateThread(QObject):
             self.tasks.append(
                 self.loop.create_task(
                     self.__do_translate(curr["original"], TranslatorEnums.BAIDU,
-                                        self.cfg.baidu_target[curr["target"]])))
+                                        self.cfg.baidu_target[curr["target"]], use_cache)))
             server.add(TranslatorEnums.BAIDU)
         if main_window.googleBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
                     self.__do_translate(curr["original"], TranslatorEnums.GOOGLE,
-                                        self.cfg.google_target[curr["target"]])))
+                                        self.cfg.google_target[curr["target"]], use_cache)))
             server.add(TranslatorEnums.GOOGLE)
         if main_window.googleCNBox.isChecked():
             self.tasks.append(
                 self.loop.create_task(
                     self.__do_translate(curr["original"], TranslatorEnums.GOOGLECN,
-                                        self.cfg.googlecn_target[curr["target"]])))
+                                        self.cfg.googlecn_target[curr["target"]], use_cache)))
             server.add(TranslatorEnums.GOOGLECN)
         self.loop.run_until_complete(asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION))
         cache["server"] = curr["server"]
@@ -290,4 +292,4 @@ def submit_translate(data):
             curr["original"] = original
             curr["target"] = target
             curr["server"] = server
-            main_window.start_translate_thread.emit()
+            main_window.start_translate_thread.emit(True)

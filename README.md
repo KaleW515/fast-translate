@@ -15,6 +15,10 @@ gitee: [fast-trasnlate](https://gitee.com/kalew515/fast-translate)
 - ~~**谷歌翻译国内源无法使用的解决方案**：https://zhuanlan.zhihu.com/p/569452790~~
 - sadly, 谷歌翻译国内源彻底失效，现在还是推荐百度翻译或者配置代理使用谷歌翻译
 
+## ChangeLog
+
+- 2022-11-08： 由于百度翻译或者未来可能会支持的翻译源按照字符收费，为了避免不必要的网络IO以及重复翻译一段话浪费免费字符数，现在添加了**缓存**功能，默认过期时间是一天，支持redis和本地缓存～
+
 ## Installtion
 
 **注：本项目基于qt开发，在kde等基于qt的平台上体验较好**

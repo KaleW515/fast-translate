@@ -5,7 +5,7 @@ import urllib
 
 import httpx
 
-from core.api.abstract_translator import AbstractTranslator
+from core.translate.abstract_translator import AbstractTranslator
 from core.config.secrets.baidu_secrets import BaiduSecrets
 
 

@@ -4,7 +4,7 @@ from typing import List, Union
 
 import httpx
 
-from core.api.abstract_translator import AbstractTranslator
+from core.translate.abstract_translator import AbstractTranslator
 from core.config.secrets.google_secrets import GoogleSecrets
 
 
@@ -149,7 +149,7 @@ class GoogleTranslator(AbstractTranslator):
 
 
 if __name__ == '__main__':
-    client = GoogleTranslator()
+    client = GoogleTranslator(secrets=GoogleSecrets(proxies={"all://": "socks://127.0.0.1:7890"}))
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(client.translate('hello', target='zh'))
     loop.run_until_complete(future)

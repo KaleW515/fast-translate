@@ -4,7 +4,7 @@ import requests
 
 from core.constants.links import Links
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 
 def check_update():

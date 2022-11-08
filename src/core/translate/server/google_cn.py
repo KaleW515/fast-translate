@@ -3,7 +3,7 @@ import json
 
 import httpx
 
-from core.api.abstract_translator import AbstractTranslator
+from core.translate.abstract_translator import AbstractTranslator
 
 
 class GoogleCNTranslator(AbstractTranslator):

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>350</height>
+    <width>492</width>
+    <height>498</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="maximumSize">
    <size>
     <width>800</width>
-    <height>350</height>
+    <height>550</height>
    </size>
   </property>
   <property name="sizeIncrement">
@@ -52,19 +52,33 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" colspan="3">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="baiduAppIdLabel">
-        <property name="text">
-         <string>app id </string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="baiduAppIdText"/>
-      </item>
-     </layout>
+    <item row="7" column="0">
+     <widget class="QPushButton" name="googleSaveButton">
+      <property name="text">
+       <string>保存</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="googleSettingLabel">
+      <property name="text">
+       <string>谷歌翻译设置</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QPushButton" name="baiduSaveButton">
+      <property name="text">
+       <string>保存</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="redisSettingLabel">
+      <property name="text">
+       <string>Redis设置</string>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0" colspan="3">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -79,13 +93,6 @@
        <widget class="QLineEdit" name="baiduAppKeyText"/>
       </item>
      </layout>
-    </item>
-    <item row="7" column="0">
-     <widget class="QPushButton" name="googleSaveButton">
-      <property name="text">
-       <string>保存</string>
-      </property>
-     </widget>
     </item>
     <item row="7" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -117,12 +124,33 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="baiduSaveButton">
-      <property name="text">
-       <string>保存</string>
-      </property>
-     </widget>
+    <item row="11" column="0" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <widget class="QLabel" name="redisPasswordLabel">
+        <property name="text">
+         <string>password</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="redisPasswordText"/>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="baiduAppIdLabel">
+        <property name="text">
+         <string>app id </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="baiduAppIdText"/>
+      </item>
+     </layout>
     </item>
     <item row="3" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -177,6 +205,9 @@
     </item>
     <item row="6" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="googleProxyHeadText"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="googleProxyLabel">
         <property name="text">
@@ -184,18 +215,43 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="googleProxyHeadText"/>
+     </layout>
+    </item>
+    <item row="10" column="0" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="redisPortLabel">
+        <property name="text">
+         <string>port</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="redisPortText"/>
+      </item>
+     </layout>
+    </item>
+    <item row="9" column="0" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="redisHostLabel">
+        <property name="text">
+         <string>host</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="redisHostText"/>
       </item>
      </layout>
     </item>
     <item row="6" column="2">
      <widget class="QLineEdit" name="googleProxyTailText"/>
     </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="googleSettingLabel">
+    <item row="12" column="0">
+     <widget class="QPushButton" name="redisSaveButton">
       <property name="text">
-       <string>谷歌翻译设置</string>
+       <string>保存</string>
       </property>
      </widget>
     </item>
@@ -206,7 +262,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>500</width>
+     <width>492</width>
      <height>32</height>
     </rect>
    </property>
