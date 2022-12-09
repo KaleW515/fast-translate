@@ -12,7 +12,7 @@ class FileConstants:
     LOG_DIR_PATH = HOME_PATH + "/.cache/fast-translate"
 
     # config 模板文件路径
-    CONFIG_TEMPLATE_FILE_PATH = "../../data/config_template.json"
+    CONFIG_TEMPLATE_FILE_PATH = "./data/config_template.json"
 
     # config 文件全路径
     CONFIG_FILE_PATH = CONFIG_DIR_PATH + "/config.json"
