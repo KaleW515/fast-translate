@@ -120,8 +120,9 @@ class UiPreference(QMainWindow, Ui_preference.Ui_Preference):
             self.baiduAppIdText.setText(baidu.app_id)
             self.baiduAppKeyText.setText(baidu.app_key)
         if google is not None:
-            self.googleProxyHeadText.setText(google.proxies.keys().__iter__().__next__())
-            self.googleProxyTailText.setText(google.proxies.values().__iter__().__next__())
+            if len(google.proxies.keys()) != 0:
+                self.googleProxyHeadText.setText(google.proxies.keys().__iter__().__next__())
+                self.googleProxyTailText.setText(google.proxies.values().__iter__().__next__())
         if redis is not None:
             self.redisHostText.setText(redis.host)
             self.redisPortText.setText(redis.port)

@@ -32,7 +32,7 @@ class BaiduTranslator(AbstractTranslator):
         return await self.__do_translate(original, target=target)
 
     async def __do_translate(self, original, text_from="auto", target="zh") -> (str, bool):
-        if self.app_id == "" or self.app_key == "":
+        if self.app_id == "" or self.app_key == "" or self.app_id is None or self.app_key is None:
             return "百度翻译接口未配置", False
         sign, salt = self.__get_sign_salt(original)
         url = self.url.format(urllib.parse.quote(original), text_from, target, self.app_id, salt,

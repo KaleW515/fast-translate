@@ -107,18 +107,11 @@ class Configuration:
             logging.error(e.__str__())
             return False
 
-    @staticmethod
-    def refresh_config(func):
-        def wrap(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            self.__check_config()
-            self.__constant_init()
-            self.__secret_init()
-            return result
+    def refresh_config(self):
+        self.__check_config()
+        self.__constant_init()
+        self.__secret_init()
 
-        return wrap
-
-    @refresh_config
     def change_baidu_secret(self, appid: str, appkey: str):
         try:
             with open(FileConstants.CONFIG_FILE_PATH, "r") as f:
@@ -127,12 +120,12 @@ class Configuration:
             cfg[self.baidu_secret_name]["appKey"] = appkey
             with open(FileConstants.CONFIG_FILE_PATH, "w") as f:
                 json.dump(cfg, f)
+            self.refresh_config()
         except Exception as e:
             logging.error(e.__str__())
             return False
         return True
 
-    @refresh_config
     def change_google_proxy(self, protocol: str, proxy: str):
         try:
             with open(FileConstants.CONFIG_FILE_PATH, "r") as f:
@@ -142,12 +135,12 @@ class Configuration:
             }
             with open(FileConstants.CONFIG_FILE_PATH, "w") as f:
                 json.dump(cfg, f)
+            self.refresh_config()
         except Exception as e:
             logging.error(e.__str__())
             return False
         return True
 
-    @refresh_config
     def change_redis_secret(self, host: str, port: int, password: str):
         try:
             with open(FileConstants.CONFIG_FILE_PATH, "r") as f:
@@ -157,6 +150,7 @@ class Configuration:
             cfg[self.redis_secret_name]["password"] = password
             with open(FileConstants.CONFIG_FILE_PATH, "w") as f:
                 json.dump(cfg, f)
+            self.refresh_config()
         except Exception as e:
             logging.error(e.__str__())
             return False
